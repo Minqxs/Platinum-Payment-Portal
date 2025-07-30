@@ -21,6 +21,11 @@ public class PaymentRequest
 
     public string? CoverSheetPdfPath { get; set; }  // Optional final PDF after merge
 
-    public InvoiceFile Invoice { get; set; } = null!;
-    public ProofOfPaymentFile? ProofOfPayment { get; set; }
+    public InvoiceFile? InvoiceFile { get; set; }
+    public string? InvoiceFileName { get; set; }
+
+    public ProofOfPaymentFile? ProofOfPaymentFile { get; set; }
+    public string? ProofOfPaymentFileName { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 }

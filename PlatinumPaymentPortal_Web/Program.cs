@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PlatinumPaymentPortal_Core.DataAccess;
-using PlatinumPaymentPortal_Core.Mutations;
 using PlatinumPaymentPortal_Core.Queries;
 using PlatinumPaymentProtal;
 
@@ -17,7 +16,10 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
 builder.Services.AddCoreServices();
 builder.Services.AddGraphQLServer()
     .AddQueryType<Query>()
-    .AddMutationType<Mutations>()
+    .AddMutationType<Mutation>()
+    .AddAuthorization()
+    .AddType<UploadType>()
+    .AddMutationConventions(applyToAllMutations: true)
     .AddFiltering();
 
 var app = builder.Build();
