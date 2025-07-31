@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
@@ -29,7 +30,7 @@
     "yup": "^1.6.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "us": "curl https://localhost:7290/graphql/schema -o ./schemas/schema.gql",
     "relay": "relay-compiler --watch"
   },
@@ -54,6 +55,7 @@
   "devDependencies": {
     "@types/react-relay": "^18.2.1",
     "@types/relay-runtime": "^19.0.2",
+    "babel-plugin-relay": "^20.1.0",
     "relay-compiler": "^20.1.0"
   }
 }

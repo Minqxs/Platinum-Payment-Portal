@@ -12,8 +12,8 @@ using PlatinumPaymentPortal_Core.DataAccess;
 namespace PlatinumPaymentPortal_Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250731221152_updatedEntities3")]
-    partial class updatedEntities3
+    [Migration("20250731225313_updatedEntities2")]
+    partial class updatedEntities2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

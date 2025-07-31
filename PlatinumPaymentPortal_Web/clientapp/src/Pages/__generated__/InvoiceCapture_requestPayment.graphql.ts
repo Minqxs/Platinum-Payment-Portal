@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<afaeb1f9c822555a066ca093164c38db>>
+ * @generated SignedSource<<dc98ebad0864f8070369359a3c0fdae1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,7 @@ export type InvoiceCapture_requestPayment$data = {
   readonly isSignedOff: boolean;
   readonly manager: {
     readonly label: string;
-    readonly value: number;
+    readonly value: string;
   };
   readonly paymentDateRequested: any;
   readonly paymentDescription: string;
@@ -116,7 +116,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Manager",
+      "concreteType": "User",
       "kind": "LinkedField",
       "name": "manager",
       "plural": false,
@@ -125,7 +125,7 @@ return {
           "alias": "label",
           "args": null,
           "kind": "ScalarField",
-          "name": "fullName",
+          "name": "firstName",
           "storageKey": null
         },
         (v0/*: any*/)
@@ -180,6 +180,6 @@ return {
 };
 })();
 
-(node as any).hash = "d7cd1ab8cb1823da1ff2f5922e5ba998";
+(node as any).hash = "406acb1fa46cbd1eef449f3b52abad3e";
 
 export default node;

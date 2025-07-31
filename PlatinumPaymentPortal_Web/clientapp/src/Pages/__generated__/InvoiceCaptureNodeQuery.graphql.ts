@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0644dc5ea81b461af662b8dcc9362185>>
+ * @generated SignedSource<<2a05f827d317410f56114f8c53be9bfd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -204,7 +204,7 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Manager",
+                    "concreteType": "User",
                     "kind": "LinkedField",
                     "name": "manager",
                     "plural": false,
@@ -213,10 +213,11 @@ return {
                         "alias": "label",
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "fullName",
+                        "name": "firstName",
                         "storageKey": null
                       },
-                      (v3/*: any*/)
+                      (v3/*: any*/),
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -274,12 +275,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "e214ad755803e65204cdfbc12c1d1da4",
+    "cacheID": "373f1dcca0a5a18c7abab3f50efef49d",
     "id": null,
     "metadata": {},
     "name": "InvoiceCaptureNodeQuery",
     "operationKind": "query",
-    "text": "query InvoiceCaptureNodeQuery(\n  $id: ID!\n  $skip: Boolean!\n) {\n  ...InvoiceCapture_Query\n  node(id: $id) @skip(if: $skip) {\n    __typename\n    ... on PaymentRequest {\n      ...InvoiceCapture_requestPayment\n    }\n    id\n  }\n}\n\nfragment InvoiceCapture_Query on Query {\n  paymentRequests {\n    id\n  }\n}\n\nfragment InvoiceCapture_requestPayment on PaymentRequest {\n  id\n  coverSheetPdfPath\n  department {\n    value: id\n    label: nameOfDepartment\n  }\n  invoiceDate\n  invoiceFile\n  invoiceFileName\n  isSignedOff\n  manager {\n    label: fullName\n    value: id\n  }\n  paymentDateRequested\n  paymentDescription\n  paymentRicpientName\n  proofOfPaymentFile\n  proofOfPaymentFileName\n  ricpientBankDetails\n}\n"
+    "text": "query InvoiceCaptureNodeQuery(\n  $id: ID!\n  $skip: Boolean!\n) {\n  ...InvoiceCapture_Query\n  node(id: $id) @skip(if: $skip) {\n    __typename\n    ... on PaymentRequest {\n      ...InvoiceCapture_requestPayment\n    }\n    id\n  }\n}\n\nfragment InvoiceCapture_Query on Query {\n  paymentRequests {\n    id\n  }\n}\n\nfragment InvoiceCapture_requestPayment on PaymentRequest {\n  id\n  coverSheetPdfPath\n  department {\n    value: id\n    label: nameOfDepartment\n  }\n  invoiceDate\n  invoiceFile\n  invoiceFileName\n  isSignedOff\n  manager {\n    label: firstName\n    value: id\n    id\n  }\n  paymentDateRequested\n  paymentDescription\n  paymentRicpientName\n  proofOfPaymentFile\n  proofOfPaymentFileName\n  ricpientBankDetails\n}\n"
   }
 };
 })();

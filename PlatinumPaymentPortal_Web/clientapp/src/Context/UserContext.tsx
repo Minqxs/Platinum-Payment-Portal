@@ -1,5 +1,6 @@
 import React from "react";
 import { graphql } from "react-relay";
+import { RoleEnum } from "./__generated__/UserContextQuery.graphql";
 
 type UserType = { userName: string; roles: RoleEnum[]; id: string };
 interface UserContextType {

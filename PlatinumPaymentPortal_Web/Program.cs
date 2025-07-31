@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using PlatinumPaymentPortal_Core;
 using PlatinumPaymentPortal_Core.DataAccess;
 using PlatinumPaymentPortal_Core.Queries;
 using PlatinumPaymentPortal_Core.Queries.Models;
@@ -26,6 +27,8 @@ builder.Services.AddGraphQLServer()
     .AddMutationType<Mutation>()
     .AddAuthorization()
     .AddType<UploadType>()
+    .AddType<RoleEnumType>()
+    .AddTypeExtension<UserExtension>()
     .AddTypeExtension<PaymentRequestExtension>()
     .AddMutationConventions(applyToAllMutations: true)
     .AddFiltering();

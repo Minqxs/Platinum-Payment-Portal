@@ -13,7 +13,10 @@ import * as Yup from "yup";
 import { FTextField } from "../Components/FTextField";
 import { graphql } from "relay-runtime";
 import { useFragment, useLazyLoadQuery } from "react-relay";
-import { InvoiceCaptureNodeQuery } from "./__generated__/InvoiceCaptureNodeQuery.graphql";
+import {
+  InvoiceCaptureNodeQuery,
+  InvoiceCaptureNodeQuery$data,
+} from "./__generated__/InvoiceCaptureNodeQuery.graphql";
 import { InvoiceCapture_Query$key } from "./__generated__/InvoiceCapture_Query.graphql";
 import { InvoiceCaptureQuery } from "./__generated__/InvoiceCaptureQuery.graphql";
 import { InvoiceCapture_requestPayment$key } from "./__generated__/InvoiceCapture_requestPayment.graphql";
@@ -94,7 +97,7 @@ const paymentResFragment = graphql`
     invoiceFileName
     isSignedOff
     manager {
-      label: fullName
+      label: firstName
       value: id
     }
     paymentDateRequested
@@ -314,28 +317,31 @@ const query = graphql`
 `;
 
 export default function InvoiceCapturePage({ id }: { id?: string }) {
-  if (id != null) {
-    const skip = !id;
-    const data = useLazyLoadQuery<InvoiceCaptureNodeQuery>(
-      nodeQuery,
-      {
-        id,
-        skip,
-      },
-      { fetchPolicy: "network-only" }
-    );
-    return (
-      <InvoiceCapturePageInner
-        queryKey={data}
-        paymentQuery={data.node ?? null}
-      />
-    );
-  } else {
-    const data = useLazyLoadQuery<InvoiceCaptureQuery>(
-      query,
-      {},
-      { fetchPolicy: "network-only" }
-    );
-    return <InvoiceCapturePageInner queryKey={data} paymentQuery={null} />;
+  if (id) {
+    return <InvoiceCaptureEditPage id={id} />;
   }
+
+  return <InvoiceCaptureCreatePage />;
+}
+
+function InvoiceCaptureEditPage({ id }: { id: string }) {
+  const data = useLazyLoadQuery<InvoiceCaptureNodeQuery>(
+    nodeQuery,
+    { id, skip: id != null },
+    { fetchPolicy: "network-only" }
+  );
+
+  return (
+    <InvoiceCapturePageInner queryKey={data} paymentQuery={data.node ?? null} />
+  );
+}
+
+function InvoiceCaptureCreatePage() {
+  const data = useLazyLoadQuery<InvoiceCaptureQuery>(
+    query,
+    {},
+    { fetchPolicy: "network-only" }
+  );
+
+  return <InvoiceCapturePageInner queryKey={data} paymentQuery={null} />;
 }

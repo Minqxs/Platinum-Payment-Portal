@@ -23,40 +23,11 @@ type Department {
   nameOfDepartment: String!
 }
 
-type Manager {
-  fullName: String!
-  signatureFilePath: String!
-  paymentRequests: [PaymentRequest!]!
-  id: Int!
-  userName: String
-  normalizedUserName: String
-  email: String
-  normalizedEmail: String
-  emailConfirmed: Boolean!
-  passwordHash: String
-  securityStamp: String
-  concurrencyStamp: String
-  phoneNumber: String
-  phoneNumberConfirmed: Boolean!
-  twoFactorEnabled: Boolean!
-  lockoutEnd: DateTime
-  lockoutEnabled: Boolean!
-  accessFailedCount: Int!
-}
-
 type Mutation @authorize {
-  createPaymentRequest(
-    input: CreatePaymentRequestInput!
-  ): CreatePaymentRequestPayload! @cost(weight: "10")
-  updatePaymentRequest(
-    input: UpdatePaymentRequestInput!
-  ): UpdatePaymentRequestPayload! @cost(weight: "10")
-  signOffPaymentRequest(
-    input: SignOffPaymentRequestInput!
-  ): SignOffPaymentRequestPayload! @cost(weight: "10")
-  deletePaymentRequest(
-    input: DeletePaymentRequestInput!
-  ): DeletePaymentRequestPayload! @cost(weight: "10")
+  createPaymentRequest(input: CreatePaymentRequestInput!): CreatePaymentRequestPayload! @cost(weight: "10")
+  updatePaymentRequest(input: UpdatePaymentRequestInput!): UpdatePaymentRequestPayload! @cost(weight: "10")
+  signOffPaymentRequest(input: SignOffPaymentRequestInput!): SignOffPaymentRequestPayload! @cost(weight: "10")
+  deletePaymentRequest(input: DeletePaymentRequestInput!): DeletePaymentRequestPayload! @cost(weight: "10")
 }
 
 type PaymentRequest implements Node {
@@ -71,7 +42,7 @@ type PaymentRequest implements Node {
   departmentId: Int!
   department: Department!
   managerId: Int!
-  manager: Manager!
+  manager: User!
   isSignedOff: Boolean!
   signedOffAt: DateTime
   coverSheetPdfPath: String
@@ -88,6 +59,7 @@ type Query {
   "Lookup nodes by a list of IDs."
   nodes("The list of node IDs." ids: [ID!]!): [Node]! @cost(weight: "10")
   paymentRequests: [PaymentRequest!]! @cost(weight: "10")
+  me: User! @cost(weight: "10")
 }
 
 type SignOffPaymentRequestPayload {
@@ -100,17 +72,16 @@ type UpdatePaymentRequestPayload {
   query: Query!
 }
 
-type User {
+type User implements Node {
   firstName: String!
   lastName: String!
-  submittedRequests: [PaymentRequest!]!
-  id: Int!
+  passwordHash: String!
+  id: ID!
   userName: String
   normalizedUserName: String
   email: String
   normalizedEmail: String
   emailConfirmed: Boolean!
-  passwordHash: String
   securityStamp: String
   concurrencyStamp: String
   phoneNumber: String
@@ -119,6 +90,8 @@ type User {
   lockoutEnd: DateTime
   lockoutEnabled: Boolean!
   accessFailedCount: Int!
+  roles: [RoleEnum!]! @cost(weight: "10")
+  async(id: ID!): User! @cost(weight: "10")
 }
 
 input CreatePaymentRequestInput {
@@ -178,33 +151,28 @@ enum ApplyPolicy {
   VALIDATION
 }
 
+enum RoleEnum {
+  ADMIN
+  EMPLOYEE
+  DEPARTMENT_MANAGER
+}
+
 "The authorize directive."
-directive @authorize(
-  "The name of the authorization policy that determines access to the annotated resource."
-  policy: String
-  "Roles that are allowed to access the annotated resource."
-  roles: [String!]
-  "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase."
-  apply: ApplyPolicy! = BEFORE_RESOLVER
-) repeatable on OBJECT | FIELD_DEFINITION
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
-directive @cost(
-  "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
-  weight: String!
-) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy(
-  "The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types."
-  url: String!
-) on SCALAR
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 "The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
 scalar Byte
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
 
 "The `Upload` scalar type represents a file upload."
 scalar Upload
