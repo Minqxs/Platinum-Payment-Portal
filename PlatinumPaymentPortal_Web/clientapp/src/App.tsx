@@ -5,13 +5,13 @@ import DashboardPage from "./Pages/Dashboard";
 import DocumentUploadPage from "./Pages/DocumentUpload";
 import InvoiceCapturePage from "./Pages/InvoiceCapture";
 import InvoiceListPage from "./Pages/Invoices";
-import Login from "./Pages/Login";
+import { LoginPage } from "./Pages/Login";
 import Layout from "./Components/Layout";
 
 const App = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<LoginPage />} />
 
       <Route path="/" element={<Layout />}>
         <Route index element={<DashboardPage />} />

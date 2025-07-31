@@ -10,13 +10,7 @@ interface Props {
   childProps?: GridProps;
 }
 
-export function PageLayoutWrapper({
-  children,
-  pageHeader,
-  headerProps,
-  containerProps,
-  childProps,
-}: Props) {
+export function PageLayoutWrapper({ children }: Props) {
   return (
     <Grid container rowGap={2} sx={{ background: "black" }}>
       {children}

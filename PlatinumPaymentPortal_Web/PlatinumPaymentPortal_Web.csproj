@@ -10,9 +10,12 @@
 
     <ItemGroup>
         <PackageReference Include="DinkToPdf" Version="1.0.8" />
+        <PackageReference Include="HotChocolate" Version="15.1.8" />
         <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.8" />
         <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.8" />
         <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.8" />
+        <PackageReference Include="HotChocolate.Types" Version="15.1.8" />
+        <PackageReference Include="HotChocolate.Types.Analyzers" Version="15.1.8" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.18" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.6"/>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.18" />

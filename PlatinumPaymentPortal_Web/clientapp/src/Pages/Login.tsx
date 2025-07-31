@@ -1,59 +1,100 @@
 import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
-  Container,
-  Paper,
-  Typography,
-  TextField,
   Button,
-  Box,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  TextField,
+  Typography,
+  Alert,
+  Paper,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { authService } from "./AuthenticationService";
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+const validationSchema = Yup.object({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().min(6).required("Required"),
+  rememberMe: Yup.boolean(),
+});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Replace with actual login and token storage
-    localStorage.setItem("token", "dummy-token");
-    navigate("/");
-  };
+export const LoginPage: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setError(null);
+      try {
+        await authService.login(values);
+        // Redirect or update UI after login
+        console.log("Login success!");
+      } catch (err: any) {
+        setError(err.message);
+      }
+    },
+  });
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h5" mb={3} textAlign="center">
+    <Container maxWidth="sm">
+      <Paper sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h5" gutterBottom>
           Login
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
+
+        <form onSubmit={formik.handleSubmit} noValidate>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           <TextField
+            fullWidth
+            margin="normal"
             label="Email"
-            variant="outlined"
-            fullWidth
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 2 }}
+            name="email"
+            type="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
+
           <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
             fullWidth
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ mb: 3 }}
+            margin="normal"
+            label="Password"
+            name="password"
+            type="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
-          <Button variant="contained" fullWidth type="submit">
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="rememberMe"
+                checked={formik.values.rememberMe}
+                onChange={formik.handleChange}
+              />
+            }
+            label="Remember me"
+          />
+
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
             Login
           </Button>
-        </Box>
+        </form>
       </Paper>
     </Container>
   );
 };
-
-export default Login;

@@ -1,4 +1,4 @@
-namespace PlatinumPaymentProtal;
+namespace PlatinumPaymentPortal;
 
 public static class IServiceCollectionExtensions
 {

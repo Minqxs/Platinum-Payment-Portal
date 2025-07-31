@@ -3,20 +3,24 @@ schema {
   mutation: Mutation
 }
 
+"The node interface is implemented by entities that have a global unique identifier."
+interface Node {
+  id: ID!
+}
+
 type CreatePaymentRequestPayload {
   paymentRequest: PaymentRequest
+  query: Query!
 }
 
 type DeletePaymentRequestPayload {
   paymentRequest: PaymentRequest
+  query: Query!
 }
 
-type InvoiceFile {
+type Department {
   id: Int!
-  fileName: String!
-  content: [Byte!]!
-  paymentRequestId: Int
-  paymentRequest: PaymentRequest
+  nameOfDepartment: String!
 }
 
 type Manager {
@@ -41,76 +45,64 @@ type Manager {
 }
 
 type Mutation @authorize {
-  uploadInvoice(input: UploadInvoiceInput!): UploadInvoicePayload! @cost(weight: "10")
-  updateInvoice(input: UpdateInvoiceInput!): UpdateInvoicePayload! @cost(weight: "10")
-  uploadProofOfPayment(input: UploadProofOfPaymentInput!): UploadProofOfPaymentPayload! @cost(weight: "10")
-  updateProofOfPayment(input: UpdateProofOfPaymentInput!): UpdateProofOfPaymentPayload! @cost(weight: "10")
-  createPaymentRequest(input: CreatePaymentRequestInput!): CreatePaymentRequestPayload! @cost(weight: "10")
-  updatePaymentRequest(input: UpdatePaymentRequestInput!): UpdatePaymentRequestPayload! @cost(weight: "10")
-  signOffPaymentRequest(input: SignOffPaymentRequestInput!): SignOffPaymentRequestPayload! @cost(weight: "10")
-  deletePaymentRequest(input: DeletePaymentRequestInput!): DeletePaymentRequestPayload! @cost(weight: "10")
+  createPaymentRequest(
+    input: CreatePaymentRequestInput!
+  ): CreatePaymentRequestPayload! @cost(weight: "10")
+  updatePaymentRequest(
+    input: UpdatePaymentRequestInput!
+  ): UpdatePaymentRequestPayload! @cost(weight: "10")
+  signOffPaymentRequest(
+    input: SignOffPaymentRequestInput!
+  ): SignOffPaymentRequestPayload! @cost(weight: "10")
+  deletePaymentRequest(
+    input: DeletePaymentRequestInput!
+  ): DeletePaymentRequestPayload! @cost(weight: "10")
 }
 
-type PaymentRequest {
-  id: Int!
+type PaymentRequest implements Node {
+  id: ID!
   submittedById: Int!
   submittedBy: User!
   invoiceDate: DateTime!
   paymentDateRequested: DateTime!
-  payeeName: String!
-  payeeBankDetails: String!
+  paymentRicpientName: String!
+  ricpientBankDetails: String!
   paymentDescription: String!
+  departmentId: Int!
+  department: Department!
   managerId: Int!
   manager: Manager!
   isSignedOff: Boolean!
   signedOffAt: DateTime
   coverSheetPdfPath: String
-  invoiceFile: InvoiceFile
-  invoiceFileName: String
-  proofOfPaymentFile: ProofOfPaymentFile
+  invoiceFile: [Byte!]!
+  invoiceFileName: String!
+  proofOfPaymentFile: [Byte!]
   proofOfPaymentFileName: String
   isDeleted: Boolean!
 }
 
-type ProofOfPaymentFile {
-  id: Int!
-  fileName: String!
-  content: [Byte!]!
-  paymentRequestId: Int!
-  paymentRequest: PaymentRequest!
-}
-
 type Query {
-  hello: String!
+  "Fetches an object given its ID."
+  node("ID of the object." id: ID!): Node @cost(weight: "10")
+  "Lookup nodes by a list of IDs."
+  nodes("The list of node IDs." ids: [ID!]!): [Node]! @cost(weight: "10")
+  paymentRequests: [PaymentRequest!]! @cost(weight: "10")
 }
 
 type SignOffPaymentRequestPayload {
   paymentRequest: PaymentRequest
-}
-
-type UpdateInvoicePayload {
-  invoiceFile: InvoiceFile
+  query: Query!
 }
 
 type UpdatePaymentRequestPayload {
   paymentRequest: PaymentRequest
-}
-
-type UpdateProofOfPaymentPayload {
-  proofOfPaymentFile: ProofOfPaymentFile
-}
-
-type UploadInvoicePayload {
-  invoiceFile: InvoiceFile
-}
-
-type UploadProofOfPaymentPayload {
-  proofOfPaymentFile: ProofOfPaymentFile
+  query: Query!
 }
 
 type User {
-  fullName: String!
-  department: String!
+  firstName: String!
+  lastName: String!
   submittedRequests: [PaymentRequest!]!
   id: Int!
   userName: String
@@ -138,13 +130,17 @@ input DeletePaymentRequestInput {
 }
 
 input PaymentRequestCreateInput {
-  submittedById: Int!
+  paymentRequestId: ID!
+  submittedById: ID!
+  managerId: ID!
+  departmentId: ID!
   invoiceDate: DateTime!
-  paymentDateRequested: DateTime!
-  payeeName: String!
-  payeeBankDetails: String!
-  paymentDescription: String!
-  managerId: Int!
+  paymentRequestedDate: DateTime!
+  paymentRecipient: String!
+  paymentDetails: String!
+  description: String!
+  supplierInvoice: Upload
+  proofOfPayment: Upload
 }
 
 input PaymentRequestDeleteInput {
@@ -153,43 +149,23 @@ input PaymentRequestDeleteInput {
 
 input PaymentRequestEditInput {
   paymentRequestId: ID!
-  submittedById: Int!
+  departmentId: ID!
+  managerId: ID!
   invoiceDate: DateTime!
-  paymentDateRequested: DateTime!
-  payeeName: String!
-  payeeBankDetails: String!
-  paymentDescription: String!
-  managerId: Int!
+  paymentRequestedDate: DateTime!
+  paymentRecipient: String!
+  paymentDetails: String!
+  description: String!
+  supplierInvoice: Upload
+  proofOfPayment: Upload
 }
 
 input SignOffPaymentRequestInput {
   input: PaymentRequestDeleteInput!
 }
 
-input UpdateInvoiceInput {
-  input: UploadInvoiceRequestInput!
-}
-
 input UpdatePaymentRequestInput {
   input: PaymentRequestEditInput!
-}
-
-input UpdateProofOfPaymentInput {
-  input: UploadInvoiceRequestInput!
-}
-
-input UploadInvoiceInput {
-  input: UploadInvoiceRequestInput!
-}
-
-input UploadInvoiceRequestInput {
-  paymentRequestId: ID
-  file: Upload!
-  fileName: String!
-}
-
-input UploadProofOfPaymentInput {
-  input: UploadInvoiceRequestInput!
 }
 
 "Defines when a policy shall be executed."
@@ -203,19 +179,32 @@ enum ApplyPolicy {
 }
 
 "The authorize directive."
-directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
+directive @authorize(
+  "The name of the authorization policy that determines access to the annotated resource."
+  policy: String
+  "Roles that are allowed to access the annotated resource."
+  roles: [String!]
+  "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase."
+  apply: ApplyPolicy! = BEFORE_RESOLVER
+) repeatable on OBJECT | FIELD_DEFINITION
 
 "The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
-directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+directive @cost(
+  "The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc."
+  weight: String!
+) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
-directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+directive @specifiedBy(
+  "The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types."
+  url: String!
+) on SCALAR
 
 "The `Byte` scalar type represents non-fractional whole numeric values. Byte can represent values between 0 and 255."
 scalar Byte
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+scalar DateTime @specifiedBy(url: "https://www.graphql-scalars.com/date-time")
 
 "The `Upload` scalar type represents a file upload."
 scalar Upload

@@ -24,8 +24,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Platinum Payment Portal
         </Typography>
-        {/* Add user profile or logout buttons here */}
-        <Box>{/* Placeholder for user actions */}</Box>
       </Toolbar>
     </AppBar>
   );

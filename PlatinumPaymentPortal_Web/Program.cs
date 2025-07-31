@@ -1,7 +1,12 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PlatinumPaymentPortal_Core.DataAccess;
 using PlatinumPaymentPortal_Core.Queries;
-using PlatinumPaymentProtal;
+using PlatinumPaymentPortal_Core.Queries.Models;
+using PlatinumPaymentPortal;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +20,18 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
 });
 builder.Services.AddCoreServices();
 builder.Services.AddGraphQLServer()
+    .AddGlobalObjectIdentification()
+    .AddQueryFieldToMutationPayloads()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddAuthorization()
     .AddType<UploadType>()
+    .AddTypeExtension<PaymentRequestExtension>()
     .AddMutationConventions(applyToAllMutations: true)
     .AddFiltering();
 
+
 var app = builder.Build();
 app.ConfigureWebHostBuilder();
+
 app.Run();

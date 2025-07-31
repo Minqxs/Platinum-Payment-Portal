@@ -10,21 +10,25 @@ public class PaymentRequest
     public DateTime InvoiceDate { get; set; }
     public DateTime PaymentDateRequested { get; set; }
 
-    public string PayeeName { get; set; } = string.Empty;
-    public string PayeeBankDetails { get; set; } = string.Empty;
+    public string PaymentRicpientName { get; set; } = string.Empty;
+    public string RicpientBankDetails { get; set; } = string.Empty;
     public string PaymentDescription { get; set; } = string.Empty;
 
+
+    public int DepartmentId { get; set; }
+    public Department Department { get; set; } = null!;
+
     public int ManagerId { get; set; }
-    public Manager Manager { get; set; } = null!;
+    public User Manager { get; set; } = null!;
     public bool IsSignedOff { get; set; } = false;
     public DateTime? SignedOffAt { get; set; }
 
-    public string? CoverSheetPdfPath { get; set; }  // Optional final PDF after merge
+    public string? CoverSheetPdfPath { get; set; }
 
-    public InvoiceFile? InvoiceFile { get; set; }
-    public string? InvoiceFileName { get; set; }
+    public byte[] InvoiceFile { get; set; } = Array.Empty<byte>();
+    public string InvoiceFileName { get; set; } = string.Empty;
 
-    public ProofOfPaymentFile? ProofOfPaymentFile { get; set; }
+    public byte[]? ProofOfPaymentFile { get; set; }
     public string? ProofOfPaymentFileName { get; set; }
 
     public bool IsDeleted { get; set; } = false;

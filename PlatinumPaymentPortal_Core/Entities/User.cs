@@ -2,10 +2,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace PlatinumPaymentPortal_Core.Entities;
 
-public class User : IdentityUser<int>
+public class User : IdentityUser<Guid>
 {
-public string FullName { get; set; } = string.Empty;
-public string Department { get; set; } = string.Empty;
-
-public List<PaymentRequest> SubmittedRequests { get; set; } = new();
+public string FirstName { get; set; } = string.Empty;
+public string LastName { get; set; } = string.Empty;
+public string PasswordHash { get; set; } = string.Empty;
 }
