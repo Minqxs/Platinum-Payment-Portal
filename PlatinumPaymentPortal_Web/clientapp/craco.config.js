@@ -1,5 +1,5 @@
 module.exports = {
-  babel: {
-    plugins: ["relay"],
-  },
+    babel: {
+        plugins: ["relay"],
+    },
 };

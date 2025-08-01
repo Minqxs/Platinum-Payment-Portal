@@ -23,7 +23,7 @@ public class PaymentRequestService
             RicpientBankDetails = input.PaymentDetails,
             PaymentDescription = input.Description,
             DepartmentId = input.DepartmentId,
-            ManagerId = input.ManagerId,
+            ManagerId = input.ManagerId
         };
 
         // Read Supplier Invoice file
@@ -128,9 +128,12 @@ public class PaymentRequestService
         string PaymentRecipient,
         string PaymentDetails,
         string Description,
-        [property: GraphQLType(typeof(UploadType))] IFile SupplierInvoice,
-        [property: GraphQLType(typeof(UploadType))] IFile? ProofOfPayment
+        [property: GraphQLType(typeof(UploadType))]
+        IFile SupplierInvoice,
+        [property: GraphQLType(typeof(UploadType))]
+        IFile? ProofOfPayment
     );
+
     public record PaymentRequestEditInput(
         [property: ID] int PaymentRequestId,
         [property: ID] int DepartmentId,
@@ -140,8 +143,10 @@ public class PaymentRequestService
         string PaymentRecipient,
         string PaymentDetails,
         string Description,
-        [property: GraphQLType(typeof(UploadType))] IFile SupplierInvoice,
-        [property: GraphQLType(typeof(UploadType))] IFile? ProofOfPayment
+        [property: GraphQLType(typeof(UploadType))]
+        IFile SupplierInvoice,
+        [property: GraphQLType(typeof(UploadType))]
+        IFile? ProofOfPayment
     );
 
     public record PaymentRequestDeleteInput(

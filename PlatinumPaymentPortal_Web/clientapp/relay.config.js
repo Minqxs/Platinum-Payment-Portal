@@ -1,6 +1,6 @@
 module.exports = {
-  language: "typescript",
-  src: "./src",
-  eagerEsModules: true,
-  schema: "./schemas/schema.gql",
+    language: "typescript",
+    src: "./src",
+    eagerEsModules: true,
+    schema: "./schemas/schema.gql",
 };

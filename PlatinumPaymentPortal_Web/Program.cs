@@ -12,7 +12,6 @@ using PlatinumPaymentPortal;
 var builder = WebApplication.CreateBuilder(args);
 
 
-
 var configuration = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContextFactory<AppDbContext>(options =>
@@ -30,7 +29,7 @@ builder.Services.AddGraphQLServer()
     .AddType<RoleEnumType>()
     .AddTypeExtension<UserExtension>()
     .AddTypeExtension<PaymentRequestExtension>()
-    .AddMutationConventions(applyToAllMutations: true)
+    .AddMutationConventions(true)
     .AddFiltering();
 
 

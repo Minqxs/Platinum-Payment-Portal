@@ -1,27 +1,27 @@
-import { Grid, GridProps } from "@mui/material";
+import {Grid, GridProps} from "@mui/material";
 import React from "react";
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 interface Props {
-  children: React.ReactNode;
-  pageHeader?: React.ReactNode;
-  headerProps?: GridProps;
-  containerProps?: GridProps;
-  childProps?: GridProps;
+    children: React.ReactNode;
+    pageHeader?: React.ReactNode;
+    headerProps?: GridProps;
+    containerProps?: GridProps;
+    childProps?: GridProps;
 }
 
-export function PageLayoutWrapper({ children }: Props) {
-  return (
-    <Grid container rowGap={2} sx={{ background: "black" }}>
-      {children}
-    </Grid>
-  );
+export function PageLayoutWrapper({children}: Props) {
+    return (
+        <Grid container rowGap={2} sx={{background: "black"}}>
+            {children}
+        </Grid>
+    );
 }
 
 export default function Layout() {
-  return (
-    <PageLayoutWrapper>
-      <Outlet />
-    </PageLayoutWrapper>
-  );
+    return (
+        <PageLayoutWrapper>
+            <Outlet/>
+        </PageLayoutWrapper>
+    );
 }

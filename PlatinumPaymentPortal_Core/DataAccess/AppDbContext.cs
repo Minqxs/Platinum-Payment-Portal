@@ -25,5 +25,4 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid>
         builder.Properties(typeof(Enum))
             .HaveConversion<string>();
     }
-
 }

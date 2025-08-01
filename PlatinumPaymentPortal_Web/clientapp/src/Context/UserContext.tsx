@@ -1,11 +1,17 @@
 import React from "react";
-import { graphql } from "react-relay";
-import { RoleEnum } from "./__generated__/UserContextQuery.graphql";
+import { graphql, useLazyLoadQuery } from "react-relay";
+import {
+  RoleEnum,
+  UserContextQuery,
+} from "./__generated__/UserContextQuery.graphql";
 
 type UserType = { userName: string; roles: RoleEnum[]; id: string };
+
 interface UserContextType {
   user: UserType;
+
   hasRole(role: RoleEnum): boolean;
+
   hasRoles(roles: RoleEnum[]): boolean;
 }
 
@@ -46,5 +52,35 @@ interface Props {
 }
 
 export function UserContextProvider({ children }: Props) {
-  return <></>;
+  const data = useLazyLoadQuery<UserContextQuery>(
+    query,
+    {},
+    { fetchPolicy: "network-only" }
+  );
+
+  const hasRole = (role: RoleEnum) => {
+    if (data && data?.me?.roles?.indexOf(role) !== -1) {
+      return true;
+    }
+
+    return false;
+  };
+  const hasRoles = (searchRoles: RoleEnum[]) => {
+    for (const role of searchRoles) {
+      if (data && data?.me?.roles?.indexOf(role) !== -1) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const user: UserType = {
+    userName: data?.me?.userName ?? "",
+    roles: data?.me?.roles.map((r) => r),
+    id: data?.me?.id ?? "",
+  };
+
+  const value = { user, hasRole, hasRoles };
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }

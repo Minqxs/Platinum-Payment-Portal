@@ -21,5 +21,4 @@ public class AuthService
         var roles = await dbContext.Roles.Where(r => usersRoles.Contains(r.Id)).ToListAsync();
         return roles;
     }
-
 }

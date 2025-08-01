@@ -11,7 +11,7 @@ public static class Extensions
             "Admin" => RoleEnum.Admin,
             "Manager" => RoleEnum.DepartmentManager,
             "Employee" => RoleEnum.Employee,
-            _ => throw new Exception($"Cant convert role {roleType}"),
+            _ => throw new Exception($"Cant convert role {roleType}")
         };
     }
 }
