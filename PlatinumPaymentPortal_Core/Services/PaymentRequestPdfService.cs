@@ -145,7 +145,7 @@ public class PaymentRequestPdfService
 
     public async Task<string?> GeneratePdfStringFromHtmlAsync(AppDbContext dbContext, int paymentRequestId)
     {
-        var request = await dbContext.Set<PaymentRequest>()
+        var request = await dbContext.PaymentRequests
             .FirstOrDefaultAsync(r => r.Id == paymentRequestId);
 
         if (request == null)

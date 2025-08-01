@@ -7,7 +7,7 @@ public enum RoleEnum
 {
     Admin,
     Employee,
-    DepartmentManager
+    Manager
 }
 
 public class Role : IdentityRole<Guid>
@@ -16,12 +16,12 @@ public class Role : IdentityRole<Guid>
 
     public const string Employee = "Employee";
 
-    public const string DepartmentManager = "DepartmentManager";
+    public const string Manager = "Manager";
 
     public static readonly ImmutableList<string> AllRoles = new List<string>
     {
         Admin,
         Employee,
-        DepartmentManager
+        Manager
     }.ToImmutableList();
 }

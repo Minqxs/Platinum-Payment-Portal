@@ -12,7 +12,7 @@ public class Query
     public IQueryable<PaymentRequest> PaymentRequests(
         AppDbContext dbContext)
     {
-        var paymentRequests = dbContext.Set<PaymentRequest>();
+        var paymentRequests = dbContext.PaymentRequests;
         return paymentRequests;
     }
 

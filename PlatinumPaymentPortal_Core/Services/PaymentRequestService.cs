@@ -55,7 +55,7 @@ public class PaymentRequestService
     )
     {
         var paymentRequest =
-            await dbContext.Set<PaymentRequest>().FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
+            await dbContext.PaymentRequests.FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
         if (paymentRequest != null)
         {
             paymentRequest.InvoiceDate = input.InvoiceDate;
@@ -82,7 +82,7 @@ public class PaymentRequestService
     )
     {
         var paymentRequest =
-            await dbContext.Set<PaymentRequest>().FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
+            await dbContext.PaymentRequests.FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
         if (paymentRequest != null)
         {
             paymentRequest.IsSignedOff = true;
@@ -103,7 +103,7 @@ public class PaymentRequestService
     )
     {
         var paymentRequest =
-            await dbContext.Set<PaymentRequest>().FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
+            await dbContext.PaymentRequests.FirstOrDefaultAsync(p => p.Id == input.PaymentRequestId);
         if (paymentRequest != null)
         {
             paymentRequest.IsDeleted = true;
@@ -119,9 +119,8 @@ public class PaymentRequestService
     }
 
     public record PaymentRequestCreateInput(
-        [property: ID] int PaymentRequestId,
-        [property: ID] int SubmittedById,
-        [property: ID] int ManagerId,
+        [property: ID] Guid SubmittedById,
+        [property: ID] Guid ManagerId,
         [property: ID] int DepartmentId,
         DateTime InvoiceDate,
         DateTime PaymentRequestedDate,
@@ -137,7 +136,7 @@ public class PaymentRequestService
     public record PaymentRequestEditInput(
         [property: ID] int PaymentRequestId,
         [property: ID] int DepartmentId,
-        [property: ID] int ManagerId,
+        [property: ID] Guid ManagerId,
         DateTime InvoiceDate,
         DateTime PaymentRequestedDate,
         string PaymentRecipient,

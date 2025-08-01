@@ -13,7 +13,7 @@ public class PaymentRequestExtension
         AppDbContext appDbContext,
         [ID(nameof(PaymentRequest))] int id)
     {
-        var requestPayment = await appDbContext.Set<PaymentRequest>().FirstAsync((p) => p.Id == id);
+        var requestPayment = await appDbContext.PaymentRequests.FirstAsync((p) => p.Id == id);
         return requestPayment;
     }
 }

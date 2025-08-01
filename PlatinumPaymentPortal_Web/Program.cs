@@ -1,12 +1,10 @@
-using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PlatinumPaymentPortal_Core;
 using PlatinumPaymentPortal_Core.DataAccess;
 using PlatinumPaymentPortal_Core.Queries;
 using PlatinumPaymentPortal_Core.Queries.Models;
 using PlatinumPaymentPortal;
+using PlatinumPaymentProtal;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +30,22 @@ builder.Services.AddGraphQLServer()
     .AddMutationConventions(true)
     .AddFiltering();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // if you're using cookies
+    });
+});
 
 var app = builder.Build();
-app.ConfigureWebHostBuilder();
 
+await app.Initialize();
+app.UseCors();
+app.UseRouting();
+app.MapGraphQL();
+app.MapAuthEndpoints();
 app.Run();

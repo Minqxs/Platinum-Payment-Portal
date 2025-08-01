@@ -125,6 +125,112 @@ namespace PlatinumPaymentPortal_Core.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PaymentRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CoverSheetPdfPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("InvoiceFile")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("InvoiceFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSignedOff")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ManagerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaymentDateRequested")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentRicpientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ProofOfPaymentFile")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ProofOfPaymentFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RicpientBankDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SignedOffAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SubmittedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ManagerId");
+
+                    b.HasIndex("SubmittedById");
+
+                    b.ToTable("PaymentRequests");
+                });
+
+            modelBuilder.Entity("PlatinumPaymentPortal_Core.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NameOfDepartment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Department");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            NameOfDepartment = "Finance"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            NameOfDepartment = "Operations"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            NameOfDepartment = "HR"
+                        });
+                });
+
             modelBuilder.Entity("PlatinumPaymentPortal_Core.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,7 +302,6 @@ namespace PlatinumPaymentPortal_Core.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -225,7 +330,7 @@ namespace PlatinumPaymentPortal_Core.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -277,6 +382,33 @@ namespace PlatinumPaymentPortal_Core.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PaymentRequest", b =>
+                {
+                    b.HasOne("PlatinumPaymentPortal_Core.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PlatinumPaymentPortal_Core.Entities.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PlatinumPaymentPortal_Core.Entities.User", "SubmittedBy")
+                        .WithMany()
+                        .HasForeignKey("SubmittedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Manager");
+
+                    b.Navigation("SubmittedBy");
                 });
 #pragma warning restore 612, 618
         }

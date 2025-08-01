@@ -9,7 +9,7 @@ public static class EndpointRouteBuilderExtensions
 {
     public static void MapAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/api/auth/login",
+        app.MapPost("/login",
             async Task<Results<Ok<string>, ProblemHttpResult>> ([FromBody] LoginRequest loginRequest,
                 [FromServices] SignInManager<User> signInManager) =>
             {

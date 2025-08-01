@@ -4,7 +4,7 @@ public class PaymentRequest
 {
     public int Id { get; set; }
 
-    public int SubmittedById { get; set; }
+    public Guid SubmittedById { get; set; }
     public User SubmittedBy { get; set; } = null!;
 
     public DateTime InvoiceDate { get; set; }
@@ -18,7 +18,7 @@ public class PaymentRequest
     public int DepartmentId { get; set; }
     public Department Department { get; set; } = null!;
 
-    public int ManagerId { get; set; }
+    public Guid ManagerId { get; set; }
     public User Manager { get; set; } = null!;
     public bool IsSignedOff { get; set; } = false;
     public DateTime? SignedOffAt { get; set; }
