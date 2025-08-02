@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fe9587737711c174c314727b12babb0c>>
+ * @generated SignedSource<<aa33da2f793fa8b1a437901f5dc81e09>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,34 +9,34 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type CreatePaymentRequestInput = {
-  input: PaymentRequestCreateInput;
+export type UpdatePaymentRequestInput = {
+  input: PaymentRequestEditInput;
 };
-export type PaymentRequestCreateInput = {
+export type PaymentRequestEditInput = {
   departmentId: string;
   description: string;
   invoiceDate: string;
   managerId: string;
   paymentDetails: string;
   paymentRecipient: string;
+  paymentRequestId: string;
   paymentRequestedDate: string;
   proofOfPayment?: File | null;
   supplierInvoice?: File | null;
 };
-export type useCreatePaymentRequestMutation$variables = {
-  input: CreatePaymentRequestInput;
+export type useEditPaymentRequestMutation$variables = {
+  input: UpdatePaymentRequestInput;
 };
-export type useCreatePaymentRequestMutation$data = {
-  readonly createPaymentRequest: {
+export type useEditPaymentRequestMutation$data = {
+  readonly updatePaymentRequest: {
     readonly paymentRequest: {
-      readonly coverSheetPdfPath: string | null;
       readonly id: string;
     } | null;
   };
 };
-export type useCreatePaymentRequestMutation = {
-  response: useCreatePaymentRequestMutation$data;
-  variables: useCreatePaymentRequestMutation$variables;
+export type useEditPaymentRequestMutation = {
+  response: useEditPaymentRequestMutation$data;
+  variables: useEditPaymentRequestMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -57,9 +57,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "CreatePaymentRequestPayload",
+    "concreteType": "UpdatePaymentRequestPayload",
     "kind": "LinkedField",
-    "name": "createPaymentRequest",
+    "name": "updatePaymentRequest",
     "plural": false,
     "selections": [
       {
@@ -76,13 +76,6 @@ v1 = [
             "kind": "ScalarField",
             "name": "id",
             "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "coverSheetPdfPath",
-            "storageKey": null
           }
         ],
         "storageKey": null
@@ -96,7 +89,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "useCreatePaymentRequestMutation",
+    "name": "useEditPaymentRequestMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -105,20 +98,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "useCreatePaymentRequestMutation",
+    "name": "useEditPaymentRequestMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "e43b73a3a7548fe2239edffd9cee56f1",
+    "cacheID": "ffca1f1c95aa62374643b058959c23ae",
     "id": null,
     "metadata": {},
-    "name": "useCreatePaymentRequestMutation",
+    "name": "useEditPaymentRequestMutation",
     "operationKind": "mutation",
-    "text": "mutation useCreatePaymentRequestMutation(\n  $input: CreatePaymentRequestInput!\n) {\n  createPaymentRequest(input: $input) {\n    paymentRequest {\n      id\n      coverSheetPdfPath\n    }\n  }\n}\n"
+    "text": "mutation useEditPaymentRequestMutation(\n  $input: UpdatePaymentRequestInput!\n) {\n  updatePaymentRequest(input: $input) {\n    paymentRequest {\n      id\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ee511854093baf8d4c0d27784ad409e6";
+(node as any).hash = "ccdcb3fb0b33707d99d6103a3f344c8a";
 
 export default node;

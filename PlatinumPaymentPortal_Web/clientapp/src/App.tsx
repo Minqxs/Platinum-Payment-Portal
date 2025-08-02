@@ -9,10 +9,10 @@ import { LoginPage } from "./Pages/Login";
 import Layout from "./Components/Layout";
 import { AuthContextController } from "./Context/AuthContext";
 import { RelayEnvironmentProvider } from "react-relay";
-import relayEnvironment from "./Relay/environment";
+import { RelayEnvironment } from "./RelayEnvitonment";
 
 const App = () => (
-  <RelayEnvironmentProvider environment={relayEnvironment}>
+  <RelayEnvironmentProvider environment={RelayEnvironment}>
     <BrowserRouter>
       <AuthContextController>
         <Routes>

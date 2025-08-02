@@ -5,7 +5,7 @@ interface LoginRequest {
 
 class AuthenticationService {
   public async login(req: LoginRequest) {
-    const result = await fetch("https://localhost:7290/login", {
+    const result = await fetch("http://localhost:7290/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

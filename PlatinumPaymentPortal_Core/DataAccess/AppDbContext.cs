@@ -15,7 +15,7 @@ public class AppDbContext : IdentityDbContext<User, Role, Guid>
     public DbSet<User> Users => this.Set<User>();
     public DbSet<Role> Roles => this.Set<Role>();
     public DbSet<PaymentRequest> PaymentRequests => this.Set<PaymentRequest>();
-    public DbSet<Department> Department => this.Set<Department>();
+    public DbSet<Department> Departments => this.Set<Department>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using HotChocolate;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PlatinumPaymentPortal_Core.DataAccess;
 using PlatinumPaymentPortal_Core.Entities;
 using PlatinumPaymentPortal_Core.Services;
@@ -12,8 +14,29 @@ public class Query
     public IQueryable<PaymentRequest> PaymentRequests(
         AppDbContext dbContext)
     {
-        var paymentRequests = dbContext.PaymentRequests;
+        var paymentRequests = dbContext
+            .PaymentRequests
+            .Include(p => p.Department)
+            .Include(p => p.Manager)
+            .Include(p => p.SubmittedBy)
+            .AsQueryable();
         return paymentRequests;
+    }
+
+    public IQueryable<User> Managers(
+        AppDbContext dbContext)
+    {
+        var managerRole = dbContext.Roles.SingleOrDefault(r => r.Name == "Manager");
+        var managerIds = dbContext.UserRoles.Where(r => r.RoleId == managerRole.Id).Select(l => l.UserId);
+        var users = dbContext.Users.Where(p => managerIds.Contains(p.Id));
+        return users;
+    }
+
+    public IQueryable<Department> Departments(
+        AppDbContext dbContext)
+    {
+        var departments = dbContext.Departments.AsQueryable();
+        return departments;
     }
 
     public async Task<User> Me(

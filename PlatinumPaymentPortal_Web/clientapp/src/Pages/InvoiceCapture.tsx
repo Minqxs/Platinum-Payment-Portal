@@ -8,24 +8,26 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { FTextField } from "../Components/FTextField";
 import { graphql } from "relay-runtime";
-import { useFragment, useLazyLoadQuery } from "react-relay";
 import {
-  InvoiceCaptureNodeQuery,
-  InvoiceCaptureNodeQuery$data,
-} from "./__generated__/InvoiceCaptureNodeQuery.graphql";
+  useFragment,
+  useLazyLoadQuery,
+  useRefetchableFragment,
+} from "react-relay";
+import { InvoiceCaptureNodeQuery } from "./__generated__/InvoiceCaptureNodeQuery.graphql";
 import { InvoiceCapture_Query$key } from "./__generated__/InvoiceCapture_Query.graphql";
 import { InvoiceCaptureQuery } from "./__generated__/InvoiceCaptureQuery.graphql";
 import { InvoiceCapture_requestPayment$key } from "./__generated__/InvoiceCapture_requestPayment.graphql";
 import { useCreatePaymentRequest } from "./Mutations/useCreatePaymentRequestMutation";
 import { useParams } from "react-router-dom";
+import { InvoiceCaptureRefetchQuery } from "./__generated__/InvoiceCaptureRefetchQuery.graphql";
+import { useGeneratePaymentRequestPdf } from "./Mutations/useGeneratePaymentRequestPdf";
+import { useEditPaymentRequest } from "./Mutations/useEditPaymentRequestMutation";
 
 const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  surname: Yup.string().required("Surname is required"),
   department: Yup.string().nullable(),
   invoiceDate: Yup.date()
     .required("Invoice date is required")
@@ -53,7 +55,7 @@ const validationSchema = Yup.object({
 
 interface Props {
   queryKey: InvoiceCapture_Query$key;
-  paymentQuery: InvoiceCapture_requestPayment$key | null;
+  paymentQueryKey: InvoiceCapture_requestPayment$key | null;
 }
 
 export interface AutoCompleteOption {
@@ -62,8 +64,7 @@ export interface AutoCompleteOption {
 }
 
 export interface PaymentRequisitionFormValues {
-  name: string;
-  surname: string;
+  fullname: string;
   department: AutoCompleteOption | null;
   invoiceDate: string;
   paymentRequestedDate: string;
@@ -99,68 +100,123 @@ const paymentResFragment = graphql`
     invoiceFileName
     isSignedOff
     manager {
-      label: firstName
       value: id
+      label: fullName
     }
+    submittedBy {
+      id
+      fullName
+    }
+
     paymentDateRequested
     paymentDescription
     paymentRicpientName
     proofOfPaymentFile
     proofOfPaymentFileName
     ricpientBankDetails
+    invoiceFile
+    invoiceFileName
+    proofOfPaymentFile
+    proofOfPaymentFileName
   }
 `;
 
 const fragment = graphql`
   fragment InvoiceCapture_Query on Query
   @refetchable(queryName: "InvoiceCaptureRefetchQuery") {
-    paymentRequests {
-      id
+    managers {
+      value: id
+      label: fullName
+    }
+    departments {
+      value: id
+      label: nameOfDepartment
     }
   }
 `;
 
-function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
+function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
   const [create, isCreating] = useCreatePaymentRequest();
+  const [edit, isEditing] = useEditPaymentRequest();
+  const [generatePdf, isGeneratePdf] = useGeneratePaymentRequestPdf();
   const data = useFragment<InvoiceCapture_requestPayment$key>(
     paymentResFragment,
-    paymentQuery
+    paymentQueryKey
   );
-
+  console.log({ data });
+  const [dropdown] = useRefetchableFragment<
+    InvoiceCaptureRefetchQuery,
+    InvoiceCapture_Query$key
+  >(fragment, queryKey);
+  const d = new Date(data?.paymentDateRequested ?? "")
+    .toISOString()
+    .split("T")[0];
+  console.log();
   const initialValues: PaymentRequisitionFormValues = {
-    name: "",
-    surname: "",
+    fullname: data?.submittedBy.fullName ?? "",
     department: data?.department ?? null,
-    invoiceDate: data?.invoiceDate ?? "",
-    paymentRequestedDate: data?.paymentDateRequested ?? "",
+    invoiceDate:
+      new Date(data?.invoiceDate ?? "").toISOString().split("T")[0] ?? "",
+    paymentRequestedDate:
+      new Date(data?.paymentDateRequested ?? "").toISOString().split("T")[0] ??
+      "",
     paymentRecipient: data?.paymentRicpientName ?? "",
     paymentDetails: data?.ricpientBankDetails ?? "",
     description: data?.paymentDescription ?? "",
     managerName: data?.manager ?? null,
-    supplierInvoice: null,
+    supplierInvoice: ,
     proofOfPayment: null,
   };
 
+  console.log({ initialValues });
   const handleSubmit = async (values: typeof initialValues) => {
     const isEditMode = data != null;
 
-    // if (!isEditMode) {
-    //   create({
-    //     variables: {
-    //       input: {
-    //         input: {
-    //           description: values.description ?? "",
-    //           invoiceDate: values.invoiceDate ?? "",
-    //           managerId: (values.managerName?.value as string) ?? "",
-    //           paymentDetails: values.paymentDetails ?? "",
-    //           paymentRecipient: values.paymentRecipient ?? "",
-    //           paymentRequestedDate: values.paymentRequestedDate,
-    //           departmentId: (values.department?.value as string) ?? "",
-    //         },
-    //       },
-    //     },
-    //   });
-    // }
+    if (!isEditMode) {
+      create({
+        variables: {
+          input: {
+            input: {
+              description: values.description ?? "",
+              invoiceDate: new Date(values.invoiceDate).toISOString() ?? "",
+              managerId: (values.managerName?.value as string) ?? "",
+              paymentDetails: values.paymentDetails ?? "",
+              paymentRecipient: values.paymentRecipient ?? "",
+              paymentRequestedDate: new Date(
+                values.paymentRequestedDate
+              ).toISOString(),
+              departmentId: (values.department?.value as string) ?? "",
+              supplierInvoice: values.supplierInvoice,
+            },
+          },
+        },
+        onCompleted() {
+          console.log("k");
+        },
+        onError(e) {
+          console.log(e);
+        },
+      });
+    } else {
+      edit({
+        variables: {
+          input: {
+            input: {
+              paymentRequestId: data.id,
+              description: values.description ?? "",
+              invoiceDate: values.invoiceDate ?? "",
+              managerId: (values.managerName?.value as string) ?? "",
+              paymentDetails: values.paymentDetails ?? "",
+              paymentRecipient: values.paymentRecipient ?? "",
+              paymentRequestedDate: values.paymentRequestedDate,
+              departmentId: (values.department?.value as string) ?? "",
+            },
+          },
+        },
+        onCompleted() {},
+        onError(e) {},
+      });
+    }
   };
 
   return (
@@ -173,27 +229,27 @@ function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
           initialValues={initialValues}
           // validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize
         >
-          {({ submitForm, setFieldValue }) => (
+          {({ submitForm, setFieldValue, values }) => (
             <>
               <FTextField
-                field="name"
-                label="Name"
+                field="fullname"
+                label="Submitted by (Name and Surname )"
                 showError
                 showErrorCaption
+                disabled
               />
-              <FTextField
-                field="surname"
-                label="Surname"
-                showError
-                showErrorCaption
-              />
+
               <Autocomplete
-                disablePortal
-                options={[]}
+                options={dropdown.departments ?? []}
+                value={values.department || null}
+                onChange={(event, value) => {
+                  setFieldValue("department", value);
+                }}
                 renderInput={(params) => (
                   <FTextField
-                    field={"department"}
+                    field="department"
                     {...params}
                     label="Department"
                     showError
@@ -243,13 +299,18 @@ function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
               />
 
               <Autocomplete
-                disablePortal
-                options={[]}
+                options={dropdown.managers ?? []}
+                value={values.managerName || null}
+                onChange={(event, value) => {
+                  setFieldValue("managerName", value);
+                }}
                 renderInput={(params) => (
                   <FTextField
                     field="managerName"
                     {...params}
                     label="Manager Name and Surname"
+                    showError
+                    showErrorCaption
                   />
                 )}
               />
@@ -330,14 +391,17 @@ interface EditProp {
   id: string;
 }
 function InvoiceCaptureEditPage({ id }: EditProp) {
+  const skip = id === null;
   const data = useLazyLoadQuery<InvoiceCaptureNodeQuery>(
     nodeQuery,
-    { id, skip: id != null },
+    { id, skip },
     { fetchPolicy: "network-only" }
   );
-
   return (
-    <InvoiceCapturePageInner queryKey={data} paymentQuery={data.node ?? null} />
+    <InvoiceCapturePageInner
+      queryKey={data}
+      paymentQueryKey={data.node ?? null}
+    />
   );
 }
 
@@ -348,5 +412,5 @@ function InvoiceCaptureCreatePage() {
     { fetchPolicy: "network-only" }
   );
 
-  return <InvoiceCapturePageInner queryKey={data} paymentQuery={null} />;
+  return <InvoiceCapturePageInner queryKey={data} paymentQueryKey={null} />;
 }

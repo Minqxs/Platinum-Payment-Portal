@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc98ebad0864f8070369359a3c0fdae1>>
+ * @generated SignedSource<<281186eeb00c5a89b7cee472ec846841>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,16 +8,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type InvoiceCapture_requestPayment$data = {
-  readonly coverSheetPdfPath: string | null | undefined;
+  readonly coverSheetPdfPath: string | null;
   readonly department: {
     readonly label: string;
-    readonly value: number;
+    readonly value: string;
   };
   readonly id: string;
-  readonly invoiceDate: any;
+  readonly invoiceDate: string;
   readonly invoiceFile: ReadonlyArray<any>;
   readonly invoiceFileName: string;
   readonly isSignedOff: boolean;
@@ -25,12 +25,16 @@ export type InvoiceCapture_requestPayment$data = {
     readonly label: string;
     readonly value: string;
   };
-  readonly paymentDateRequested: any;
+  readonly paymentDateRequested: string;
   readonly paymentDescription: string;
   readonly paymentRicpientName: string;
-  readonly proofOfPaymentFile: ReadonlyArray<any> | null | undefined;
-  readonly proofOfPaymentFileName: string | null | undefined;
+  readonly proofOfPaymentFile: ReadonlyArray<any> | null;
+  readonly proofOfPaymentFileName: string | null;
   readonly ricpientBankDetails: string;
+  readonly submittedBy: {
+    readonly fullName: string;
+    readonly id: string;
+  };
   readonly " $fragmentType": "InvoiceCapture_requestPayment";
 };
 export type InvoiceCapture_requestPayment$key = {
@@ -40,6 +44,13 @@ export type InvoiceCapture_requestPayment$key = {
 
 const node: ReaderFragment = (function(){
 var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v1 = {
   "alias": "value",
   "args": null,
   "kind": "ScalarField",
@@ -52,13 +63,7 @@ return {
   "metadata": null,
   "name": "InvoiceCapture_requestPayment",
   "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
+    (v0/*: any*/),
     {
       "alias": null,
       "args": null,
@@ -74,7 +79,7 @@ return {
       "name": "department",
       "plural": false,
       "selections": [
-        (v0/*: any*/),
+        (v1/*: any*/),
         {
           "alias": "label",
           "args": null,
@@ -121,14 +126,33 @@ return {
       "name": "manager",
       "plural": false,
       "selections": [
+        (v1/*: any*/),
         {
           "alias": "label",
           "args": null,
           "kind": "ScalarField",
-          "name": "firstName",
+          "name": "fullName",
           "storageKey": null
-        },
-        (v0/*: any*/)
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "User",
+      "kind": "LinkedField",
+      "name": "submittedBy",
+      "plural": false,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "fullName",
+          "storageKey": null
+        }
       ],
       "storageKey": null
     },
@@ -180,6 +204,6 @@ return {
 };
 })();
 
-(node as any).hash = "406acb1fa46cbd1eef449f3b52abad3e";
+(node as any).hash = "fe0e71c101bd1bb0e4076dc420825d4f";
 
 export default node;

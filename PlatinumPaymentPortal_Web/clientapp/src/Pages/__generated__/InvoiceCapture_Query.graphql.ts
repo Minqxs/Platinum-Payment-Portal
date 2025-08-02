@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dfcebd283c6d477a8fabc0edf0c04522>>
+ * @generated SignedSource<<1ae41bad5a6af23e9179724040ecb24b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,11 +8,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type InvoiceCapture_Query$data = {
-  readonly paymentRequests: ReadonlyArray<{
-    readonly id: string;
+  readonly departments: ReadonlyArray<{
+    readonly label: string;
+    readonly value: string;
+  }>;
+  readonly managers: ReadonlyArray<{
+    readonly label: string;
+    readonly value: string;
   }>;
   readonly " $fragmentType": "InvoiceCapture_Query";
 };
@@ -23,7 +28,15 @@ export type InvoiceCapture_Query$key = {
 
 import InvoiceCaptureRefetchQuery_graphql from './InvoiceCaptureRefetchQuery.graphql';
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": "value",
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": {
@@ -38,16 +51,36 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "PaymentRequest",
+      "concreteType": "User",
       "kind": "LinkedField",
-      "name": "paymentRequests",
+      "name": "managers",
       "plural": true,
       "selections": [
+        (v0/*: any*/),
         {
-          "alias": null,
+          "alias": "label",
           "args": null,
           "kind": "ScalarField",
-          "name": "id",
+          "name": "fullName",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "Department",
+      "kind": "LinkedField",
+      "name": "departments",
+      "plural": true,
+      "selections": [
+        (v0/*: any*/),
+        {
+          "alias": "label",
+          "args": null,
+          "kind": "ScalarField",
+          "name": "nameOfDepartment",
           "storageKey": null
         }
       ],
@@ -57,7 +90,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "d867ce6c16a7e3d04488622119c3abb5";
+(node as any).hash = "316c7b2ff8000677f4464228f35c9893";
 
 export default node;

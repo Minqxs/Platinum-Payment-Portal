@@ -11,12 +11,13 @@ public class PaymentRequestService
 {
     public async Task<PaymentRequest> CreateAsync(
         AppDbContext dbContext,
-        PaymentRequestCreateInput input
+        PaymentRequestCreateInput input,
+        Guid submittedById
     )
     {
         var requisition = new PaymentRequest()
         {
-            SubmittedById = input.SubmittedById,
+            SubmittedById = submittedById,
             InvoiceDate = input.InvoiceDate,
             PaymentDateRequested = input.PaymentRequestedDate,
             PaymentRicpientName = input.PaymentRecipient,
@@ -119,11 +120,10 @@ public class PaymentRequestService
     }
 
     public record PaymentRequestCreateInput(
-        [property: ID] Guid SubmittedById,
         [property: ID] Guid ManagerId,
         [property: ID] int DepartmentId,
-        DateTime InvoiceDate,
-        DateTime PaymentRequestedDate,
+        DateTimeOffset InvoiceDate,
+        DateTimeOffset PaymentRequestedDate,
         string PaymentRecipient,
         string PaymentDetails,
         string Description,
@@ -137,8 +137,8 @@ public class PaymentRequestService
         [property: ID] int PaymentRequestId,
         [property: ID] int DepartmentId,
         [property: ID] Guid ManagerId,
-        DateTime InvoiceDate,
-        DateTime PaymentRequestedDate,
+        DateTimeOffset InvoiceDate,
+        DateTimeOffset PaymentRequestedDate,
         string PaymentRecipient,
         string PaymentDetails,
         string Description,

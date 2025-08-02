@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ecef07480cca25b51402edeb98b2a753>>
+ * @generated SignedSource<<d2c6a7f1704e7c05822c677d50d0ff8b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,14 +8,14 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import { ConcreteRequest, Query } from 'relay-runtime';
 export type RoleEnum = "ADMIN" | "EMPLOYEE" | "MANAGER" | "%future added value";
-export type UserContextQuery$variables = Record<PropertyKey, never>;
+export type UserContextQuery$variables = {};
 export type UserContextQuery$data = {
   readonly me: {
     readonly id: string;
     readonly roles: ReadonlyArray<RoleEnum>;
-    readonly userName: string | null | undefined;
+    readonly userName: string | null;
   };
 };
 export type UserContextQuery = {

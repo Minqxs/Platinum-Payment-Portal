@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2a05f827d317410f56114f8c53be9bfd>>
+ * @generated SignedSource<<1a39950bc0146309b099d77f96daba1d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,7 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type InvoiceCaptureNodeQuery$variables = {
   id: string;
@@ -17,7 +17,7 @@ export type InvoiceCaptureNodeQuery$variables = {
 export type InvoiceCaptureNodeQuery$data = {
   readonly node?: {
     readonly " $fragmentSpreads": FragmentRefs<"InvoiceCapture_requestPayment">;
-  } | null | undefined;
+  } | null;
   readonly " $fragmentSpreads": FragmentRefs<"InvoiceCapture_Query">;
 };
 export type InvoiceCaptureNodeQuery = {
@@ -46,19 +46,41 @@ v1 = [
   }
 ],
 v2 = {
-  "alias": null,
+  "alias": "value",
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
 v3 = {
-  "alias": "value",
+  "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v4 = [
+  (v2/*: any*/),
+  {
+    "alias": "label",
+    "args": null,
+    "kind": "ScalarField",
+    "name": "fullName",
+    "storageKey": null
+  },
+  (v3/*: any*/)
+],
+v5 = [
+  (v2/*: any*/),
+  {
+    "alias": "label",
+    "args": null,
+    "kind": "ScalarField",
+    "name": "nameOfDepartment",
+    "storageKey": null
+  },
+  (v3/*: any*/)
+];
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
@@ -114,13 +136,21 @@ return {
       {
         "alias": null,
         "args": null,
-        "concreteType": "PaymentRequest",
+        "concreteType": "User",
         "kind": "LinkedField",
-        "name": "paymentRequests",
+        "name": "managers",
         "plural": true,
-        "selections": [
-          (v2/*: any*/)
-        ],
+        "selections": (v4/*: any*/),
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "Department",
+        "kind": "LinkedField",
+        "name": "departments",
+        "plural": true,
+        "selections": (v5/*: any*/),
         "storageKey": null
       },
       {
@@ -143,7 +173,7 @@ return {
                 "name": "__typename",
                 "storageKey": null
               },
-              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "kind": "InlineFragment",
                 "selections": [
@@ -161,16 +191,7 @@ return {
                     "kind": "LinkedField",
                     "name": "department",
                     "plural": false,
-                    "selections": [
-                      (v3/*: any*/),
-                      {
-                        "alias": "label",
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "nameOfDepartment",
-                        "storageKey": null
-                      }
-                    ],
+                    "selections": (v5/*: any*/),
                     "storageKey": null
                   },
                   {
@@ -208,16 +229,25 @@ return {
                     "kind": "LinkedField",
                     "name": "manager",
                     "plural": false,
+                    "selections": (v4/*: any*/),
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "User",
+                    "kind": "LinkedField",
+                    "name": "submittedBy",
+                    "plural": false,
                     "selections": [
+                      (v3/*: any*/),
                       {
-                        "alias": "label",
+                        "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "firstName",
+                        "name": "fullName",
                         "storageKey": null
-                      },
-                      (v3/*: any*/),
-                      (v2/*: any*/)
+                      }
                     ],
                     "storageKey": null
                   },
@@ -275,12 +305,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "373f1dcca0a5a18c7abab3f50efef49d",
+    "cacheID": "0379ddb840fe2ee0576976c91052cd12",
     "id": null,
     "metadata": {},
     "name": "InvoiceCaptureNodeQuery",
     "operationKind": "query",
-    "text": "query InvoiceCaptureNodeQuery(\n  $id: ID!\n  $skip: Boolean!\n) {\n  ...InvoiceCapture_Query\n  node(id: $id) @skip(if: $skip) {\n    __typename\n    ... on PaymentRequest {\n      ...InvoiceCapture_requestPayment\n    }\n    id\n  }\n}\n\nfragment InvoiceCapture_Query on Query {\n  paymentRequests {\n    id\n  }\n}\n\nfragment InvoiceCapture_requestPayment on PaymentRequest {\n  id\n  coverSheetPdfPath\n  department {\n    value: id\n    label: nameOfDepartment\n  }\n  invoiceDate\n  invoiceFile\n  invoiceFileName\n  isSignedOff\n  manager {\n    label: firstName\n    value: id\n    id\n  }\n  paymentDateRequested\n  paymentDescription\n  paymentRicpientName\n  proofOfPaymentFile\n  proofOfPaymentFileName\n  ricpientBankDetails\n}\n"
+    "text": "query InvoiceCaptureNodeQuery(\n  $id: ID!\n  $skip: Boolean!\n) {\n  ...InvoiceCapture_Query\n  node(id: $id) @skip(if: $skip) {\n    __typename\n    ... on PaymentRequest {\n      ...InvoiceCapture_requestPayment\n    }\n    id\n  }\n}\n\nfragment InvoiceCapture_Query on Query {\n  managers {\n    value: id\n    label: fullName\n    id\n  }\n  departments {\n    value: id\n    label: nameOfDepartment\n    id\n  }\n}\n\nfragment InvoiceCapture_requestPayment on PaymentRequest {\n  id\n  coverSheetPdfPath\n  department {\n    value: id\n    label: nameOfDepartment\n    id\n  }\n  invoiceDate\n  invoiceFile\n  invoiceFileName\n  isSignedOff\n  manager {\n    value: id\n    label: fullName\n    id\n  }\n  submittedBy {\n    id\n    fullName\n  }\n  paymentDateRequested\n  paymentDescription\n  paymentRicpientName\n  proofOfPaymentFile\n  proofOfPaymentFileName\n  ricpientBankDetails\n}\n"
   }
 };
 })();
