@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b7f4cfdc84945b892db7a4776858e2c2>>
+ * @generated SignedSource<<e1bbdf424e09c8af1657f2471e44319e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from 'relay-runtime';
+import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type InvoiceCaptureQuery$variables = Record<PropertyKey, never>;
+export type InvoiceCaptureQuery$variables = {};
 export type InvoiceCaptureQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"InvoiceCapture_Query">;
 };
@@ -19,7 +19,22 @@ export type InvoiceCaptureQuery = {
   variables: InvoiceCaptureQuery$variables;
 };
 
-const node: ConcreteRequest = {
+const node: ConcreteRequest = (function(){
+var v0 = {
+  "alias": "value",
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
@@ -44,32 +59,55 @@ const node: ConcreteRequest = {
       {
         "alias": null,
         "args": null,
-        "concreteType": "PaymentRequest",
+        "concreteType": "User",
         "kind": "LinkedField",
-        "name": "paymentRequests",
+        "name": "managers",
         "plural": true,
         "selections": [
+          (v0/*: any*/),
           {
-            "alias": null,
+            "alias": "label",
             "args": null,
             "kind": "ScalarField",
-            "name": "id",
+            "name": "fullName",
             "storageKey": null
-          }
+          },
+          (v1/*: any*/)
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "Department",
+        "kind": "LinkedField",
+        "name": "departments",
+        "plural": true,
+        "selections": [
+          (v0/*: any*/),
+          {
+            "alias": "label",
+            "args": null,
+            "kind": "ScalarField",
+            "name": "nameOfDepartment",
+            "storageKey": null
+          },
+          (v1/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "96bb05203cc19a64ab035cc9b55bdb06",
+    "cacheID": "bb18147e48bc9a15c35fda9e1d6b4c12",
     "id": null,
     "metadata": {},
     "name": "InvoiceCaptureQuery",
     "operationKind": "query",
-    "text": "query InvoiceCaptureQuery {\n  ...InvoiceCapture_Query\n}\n\nfragment InvoiceCapture_Query on Query {\n  paymentRequests {\n    id\n  }\n}\n"
+    "text": "query InvoiceCaptureQuery {\n  ...InvoiceCapture_Query\n}\n\nfragment InvoiceCapture_Query on Query {\n  managers {\n    value: id\n    label: fullName\n    id\n  }\n  departments {\n    value: id\n    label: nameOfDepartment\n    id\n  }\n}\n"
   }
 };
+})();
 
 (node as any).hash = "1d780beb34777d1004cad16a0a7e3060";
 

@@ -8,20 +8,24 @@ import {
   InputLabel,
   Autocomplete,
 } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { FTextField } from "../Components/FTextField";
 import { graphql } from "relay-runtime";
-import { useFragment, useLazyLoadQuery } from "react-relay";
 import {
-  InvoiceCaptureNodeQuery,
-  InvoiceCaptureNodeQuery$data,
-} from "./__generated__/InvoiceCaptureNodeQuery.graphql";
+  useFragment,
+  useLazyLoadQuery,
+  useRefetchableFragment,
+} from "react-relay";
+import { InvoiceCaptureNodeQuery } from "./__generated__/InvoiceCaptureNodeQuery.graphql";
 import { InvoiceCapture_Query$key } from "./__generated__/InvoiceCapture_Query.graphql";
 import { InvoiceCaptureQuery } from "./__generated__/InvoiceCaptureQuery.graphql";
 import { InvoiceCapture_requestPayment$key } from "./__generated__/InvoiceCapture_requestPayment.graphql";
 import { useCreatePaymentRequest } from "./Mutations/useCreatePaymentRequestMutation";
 import { useParams } from "react-router-dom";
+import { InvoiceCaptureRefetchQuery } from "./__generated__/InvoiceCaptureRefetchQuery.graphql";
+import { useGeneratePaymentRequestPdf } from "./Mutations/useGeneratePaymentRequestPdf";
+import { useEditPaymentRequest } from "./Mutations/useEditPaymentRequestMutation";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -99,9 +103,10 @@ const paymentResFragment = graphql`
     invoiceFileName
     isSignedOff
     manager {
-      label: firstName
       value: id
+      label: fullName
     }
+
     paymentDateRequested
     paymentDescription
     paymentRicpientName
@@ -114,18 +119,29 @@ const paymentResFragment = graphql`
 const fragment = graphql`
   fragment InvoiceCapture_Query on Query
   @refetchable(queryName: "InvoiceCaptureRefetchQuery") {
-    paymentRequests {
-      id
+    managers {
+      value: id
+      label: fullName
+    }
+    departments {
+      value: id
+      label: nameOfDepartment
     }
   }
 `;
 
 function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
   const [create, isCreating] = useCreatePaymentRequest();
+  const [edit, isEditing] = useEditPaymentRequest();
+  const [generatePdf, isGeneratePdf] = useGeneratePaymentRequestPdf();
   const data = useFragment<InvoiceCapture_requestPayment$key>(
     paymentResFragment,
     paymentQuery
   );
+  const [dropdown] = useRefetchableFragment<
+    InvoiceCaptureRefetchQuery,
+    InvoiceCapture_Query$key
+  >(fragment, queryKey);
 
   const initialValues: PaymentRequisitionFormValues = {
     name: "",
@@ -144,23 +160,51 @@ function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
   const handleSubmit = async (values: typeof initialValues) => {
     const isEditMode = data != null;
 
-    // if (!isEditMode) {
-    //   create({
-    //     variables: {
-    //       input: {
-    //         input: {
-    //           description: values.description ?? "",
-    //           invoiceDate: values.invoiceDate ?? "",
-    //           managerId: (values.managerName?.value as string) ?? "",
-    //           paymentDetails: values.paymentDetails ?? "",
-    //           paymentRecipient: values.paymentRecipient ?? "",
-    //           paymentRequestedDate: values.paymentRequestedDate,
-    //           departmentId: (values.department?.value as string) ?? "",
-    //         },
-    //       },
-    //     },
-    //   });
-    // }
+    if (!isEditMode) {
+      create({
+        variables: {
+          input: {
+            input: {
+              description: values.description ?? "",
+              invoiceDate: new Date(values.invoiceDate).toISOString() ?? "",
+              managerId: (values.managerName?.value as string) ?? "",
+              paymentDetails: values.paymentDetails ?? "",
+              paymentRecipient: values.paymentRecipient ?? "",
+              paymentRequestedDate: new Date(
+                values.paymentRequestedDate
+              ).toISOString(),
+              departmentId: (values.department?.value as string) ?? "",
+              supplierInvoice: values.supplierInvoice,
+            },
+          },
+        },
+        onCompleted() {
+          console.log("k");
+        },
+        onError(e) {
+          console.log(e);
+        },
+      });
+    } else {
+      edit({
+        variables: {
+          input: {
+            input: {
+              paymentRequestId: data.id,
+              description: values.description ?? "",
+              invoiceDate: values.invoiceDate ?? "",
+              managerId: (values.managerName?.value as string) ?? "",
+              paymentDetails: values.paymentDetails ?? "",
+              paymentRecipient: values.paymentRecipient ?? "",
+              paymentRequestedDate: values.paymentRequestedDate,
+              departmentId: (values.department?.value as string) ?? "",
+            },
+          },
+        },
+        onCompleted() {},
+        onError(e) {},
+      });
+    }
   };
 
   return (
@@ -188,12 +232,15 @@ function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
                 showError
                 showErrorCaption
               />
+
               <Autocomplete
-                disablePortal
-                options={[]}
+                options={dropdown.departments ?? []}
+                onChange={(event, value) => {
+                  setFieldValue("department", value);
+                }}
                 renderInput={(params) => (
                   <FTextField
-                    field={"department"}
+                    field="department"
                     {...params}
                     label="Department"
                     showError
@@ -243,13 +290,17 @@ function InvoiceCapturePageInner({ queryKey, paymentQuery }: Props) {
               />
 
               <Autocomplete
-                disablePortal
-                options={[]}
+                options={dropdown.managers ?? []}
+                onChange={(event, value) => {
+                  setFieldValue("managerName", value);
+                }}
                 renderInput={(params) => (
                   <FTextField
                     field="managerName"
                     {...params}
                     label="Manager Name and Surname"
+                    showError
+                    showErrorCaption
                   />
                 )}
               />

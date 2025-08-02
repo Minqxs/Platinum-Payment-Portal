@@ -1,6 +1,9 @@
+using System.Security.Claims;
 using HotChocolate;
 using HotChocolate.Authorization;
+using Microsoft.AspNetCore.Identity;
 using PlatinumPaymentPortal_Core.DataAccess;
+using PlatinumPaymentPortal_Core.Entities;
 using PlatinumPaymentPortal_Core.Services;
 
 [Authorize]
@@ -17,10 +20,13 @@ public class Mutation
     public async Task<PaymentRequest> CreatePaymentRequestAsync(
         PaymentRequestService.PaymentRequestCreateInput input,
         AppDbContext dbContext,
-        [Service] PaymentRequestService paymentRequestService
+        [Service] PaymentRequestService paymentRequestService,
+        ClaimsPrincipal userClaimsPrincipal,
+        [Service] UserManager<User> userManager
     )
     {
-        return await paymentRequestService.CreateAsync(dbContext, input);
+        var user = await userManager.GetUserAsync(userClaimsPrincipal);
+        return await paymentRequestService.CreateAsync(dbContext, input, user!.Id);
     }
 
     public async Task<PaymentRequest> UpdatePaymentRequestAsync(

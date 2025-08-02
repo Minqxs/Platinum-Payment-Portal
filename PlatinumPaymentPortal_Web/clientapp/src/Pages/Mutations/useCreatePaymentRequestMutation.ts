@@ -1,15 +1,16 @@
-import {graphql, useMutation} from "react-relay";
-import {useCreatePaymentRequestMutation} from "./__generated__/useCreatePaymentRequestMutation.graphql";
+import { graphql, useMutation } from "react-relay";
+import { useCreatePaymentRequestMutation } from "./__generated__/useCreatePaymentRequestMutation.graphql";
 
 export const useCreatePaymentRequest = () =>
-useMutation<useCreatePaymentRequestMutation>(graphql`
+  useMutation<useCreatePaymentRequestMutation>(graphql`
     mutation useCreatePaymentRequestMutation(
-        $input: CreatePaymentRequestInput!
+      $input: CreatePaymentRequestInput!
     ) {
-        createPaymentRequest(input: $input) {
-            paymentRequest {
-                id
-            }
+      createPaymentRequest(input: $input) {
+        paymentRequest {
+          id
+          coverSheetPdfPath
         }
+      }
     }
-`);
+  `);

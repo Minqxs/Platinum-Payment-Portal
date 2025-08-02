@@ -12,7 +12,7 @@ using PlatinumPaymentPortal_Core.DataAccess;
 namespace PlatinumPaymentPortal_Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250801220200_InitialCreate")]
+    [Migration("20250802173756_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -214,7 +214,7 @@ namespace PlatinumPaymentPortal_Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Department");
+                    b.ToTable("Departments");
 
                     b.HasData(
                         new

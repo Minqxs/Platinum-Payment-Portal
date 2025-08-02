@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<191ceda0e156937d2ee9c25f332204f2>>
+ * @generated SignedSource<<fc8e330a7cbbe21cc62f9c6b99d84372>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,13 +8,13 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import { Fragment, ReaderFragment } from 'relay-runtime';
 export type RoleEnum = "ADMIN" | "EMPLOYEE" | "MANAGER" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type UserContext_user$data = {
   readonly id: string;
   readonly roles: ReadonlyArray<RoleEnum>;
-  readonly userName: string | null | undefined;
+  readonly userName: string | null;
   readonly " $fragmentType": "UserContext_user";
 };
 export type UserContext_user$key = {

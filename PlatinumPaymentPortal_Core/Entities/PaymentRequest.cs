@@ -7,8 +7,8 @@ public class PaymentRequest
     public Guid SubmittedById { get; set; }
     public User SubmittedBy { get; set; } = null!;
 
-    public DateTime InvoiceDate { get; set; }
-    public DateTime PaymentDateRequested { get; set; }
+    public DateTimeOffset InvoiceDate { get; set; }
+    public DateTimeOffset PaymentDateRequested { get; set; }
 
     public string PaymentRicpientName { get; set; } = string.Empty;
     public string RicpientBankDetails { get; set; } = string.Empty;
@@ -21,7 +21,7 @@ public class PaymentRequest
     public Guid ManagerId { get; set; }
     public User Manager { get; set; } = null!;
     public bool IsSignedOff { get; set; } = false;
-    public DateTime? SignedOffAt { get; set; }
+    public DateTimeOffset? SignedOffAt { get; set; }
 
     public string? CoverSheetPdfPath { get; set; }
 

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dc98ebad0864f8070369359a3c0fdae1>>
+ * @generated SignedSource<<0d3d69b3fd698d20533e776f6734777c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,16 +8,16 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ReaderFragment } from 'relay-runtime';
+import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type InvoiceCapture_requestPayment$data = {
-  readonly coverSheetPdfPath: string | null | undefined;
+  readonly coverSheetPdfPath: string | null;
   readonly department: {
     readonly label: string;
-    readonly value: number;
+    readonly value: string;
   };
   readonly id: string;
-  readonly invoiceDate: any;
+  readonly invoiceDate: string;
   readonly invoiceFile: ReadonlyArray<any>;
   readonly invoiceFileName: string;
   readonly isSignedOff: boolean;
@@ -25,11 +25,11 @@ export type InvoiceCapture_requestPayment$data = {
     readonly label: string;
     readonly value: string;
   };
-  readonly paymentDateRequested: any;
+  readonly paymentDateRequested: string;
   readonly paymentDescription: string;
   readonly paymentRicpientName: string;
-  readonly proofOfPaymentFile: ReadonlyArray<any> | null | undefined;
-  readonly proofOfPaymentFileName: string | null | undefined;
+  readonly proofOfPaymentFile: ReadonlyArray<any> | null;
+  readonly proofOfPaymentFileName: string | null;
   readonly ricpientBankDetails: string;
   readonly " $fragmentType": "InvoiceCapture_requestPayment";
 };
@@ -121,14 +121,14 @@ return {
       "name": "manager",
       "plural": false,
       "selections": [
+        (v0/*: any*/),
         {
           "alias": "label",
           "args": null,
           "kind": "ScalarField",
-          "name": "firstName",
+          "name": "fullName",
           "storageKey": null
-        },
-        (v0/*: any*/)
+        }
       ],
       "storageKey": null
     },
@@ -180,6 +180,6 @@ return {
 };
 })();
 
-(node as any).hash = "406acb1fa46cbd1eef449f3b52abad3e";
+(node as any).hash = "9ae92b4968c7ef02d31dc44d32dc8600";
 
 export default node;
