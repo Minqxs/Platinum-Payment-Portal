@@ -27,32 +27,35 @@ import { InvoiceCaptureRefetchQuery } from "./__generated__/InvoiceCaptureRefetc
 import { useGeneratePaymentRequestPdf } from "./Mutations/useGeneratePaymentRequestPdf";
 import { useEditPaymentRequest } from "./Mutations/useEditPaymentRequestMutation";
 
-const validationSchema = Yup.object({
-  department: Yup.string().nullable(),
-  invoiceDate: Yup.date()
-    .required("Invoice date is required")
-    .typeError("Invalid date"),
-  paymentRequestedDate: Yup.date()
-    .required("Payment requested date is required")
-    .typeError("Invalid date"),
-  paymentRecipient: Yup.string().required("Recipient name is required"),
-  paymentDetails: Yup.string().required("Banking details are required"),
-  description: Yup.string().required("Description is required"),
-  managerName: Yup.string().nullable(),
-  supplierInvoice: Yup.mixed()
-    .required("Supplier invoice is required")
-    .test(
-      "is-pdf",
-      "File must be a PDF",
-      (file) => file instanceof File && file.type === "application/pdf"
+const getValidationSchema = (isEditMode: boolean) =>
+  Yup.object({
+    department: Yup.string().nullable(),
+    invoiceDate: Yup.date()
+      .required("Invoice date is required")
+      .typeError("Invalid date"),
+    paymentRequestedDate: Yup.date()
+      .required("Payment requested date is required")
+      .typeError("Invalid date"),
+    paymentRecipient: Yup.string().required("Recipient name is required"),
+    paymentDetails: Yup.string().required("Banking details are required"),
+    description: Yup.string().required("Description is required"),
+    managerName: Yup.string().nullable(),
+    supplierInvoice: isEditMode
+      ? Yup.mixed().nullable()
+      : Yup.mixed()
+          .required("Supplier invoice is required")
+          .test(
+            "is-pdf",
+            "File must be a PDF",
+            (file) => file instanceof File && file.type === "application/pdf"
+          ),
+    proofOfPayment: Yup.mixed().test(
+      "is-pdf-or-empty",
+      "Proof of payment must be a PDF",
+      (file) =>
+        !file || (file instanceof File && file.type === "application/pdf")
     ),
-  proofOfPayment: Yup.mixed().test(
-    "is-pdf-or-empty",
-    "Proof of payment must be a PDF",
-    (file) => !file || (file instanceof File && file.type === "application/pdf")
-  ),
-});
-
+  });
 interface Props {
   queryKey: InvoiceCapture_Query$key;
   paymentQueryKey: InvoiceCapture_requestPayment$key | null;
@@ -114,9 +117,7 @@ const paymentResFragment = graphql`
     proofOfPaymentFile
     proofOfPaymentFileName
     ricpientBankDetails
-    invoiceFile
     invoiceFileName
-    proofOfPaymentFile
     proofOfPaymentFileName
   }
 `;
@@ -164,7 +165,7 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
     paymentDetails: data?.ricpientBankDetails ?? "",
     description: data?.paymentDescription ?? "",
     managerName: data?.manager ?? null,
-    supplierInvoice: ,
+    supplierInvoice: null,
     proofOfPayment: null,
   };
 
@@ -186,7 +187,7 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
                 values.paymentRequestedDate
               ).toISOString(),
               departmentId: (values.department?.value as string) ?? "",
-              supplierInvoice: values.supplierInvoice,
+              supplierInvoice: values.supplierInvoice ?? null,
             },
           },
         },
@@ -218,7 +219,7 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
       });
     }
   };
-
+  const isEditMode = !!data?.id;
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper sx={{ p: 4 }}>
@@ -227,7 +228,7 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
         </Typography>
         <Formik<PaymentRequisitionFormValues>
           initialValues={initialValues}
-          // validationSchema={validationSchema}
+          validationSchema={getValidationSchema(isEditMode)}
           onSubmit={handleSubmit}
           enableReinitialize
         >
@@ -315,20 +316,11 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
                 )}
               />
 
-              {/* Signature Upload */}
-              {/* <Box mt={2}>
-                <InputLabel>Manager Signature (Upload)</InputLabel>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setManagerSignature(e.target.files?.[0] || null)
-                  }
-                />
-              </Box> */}
-
               {/* Supplier Invoice */}
               <Box mt={2}>
+                {data?.invoiceFileName != null && (
+                  <Typography>{`Existing File:${data?.invoiceFileName}`}</Typography>
+                )}
                 <InputLabel>Supplier Invoice (PDF)</InputLabel>
                 <input
                   name="supplierInvoice"
@@ -346,6 +338,9 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
 
               {/* Proof of Payment */}
               <Box mt={2}>
+                {data?.proofOfPaymentFileName != null && (
+                  <Typography>{`Existing File:${data?.proofOfPaymentFileName}`}</Typography>
+                )}
                 <InputLabel>Proof of Payment (Optional)</InputLabel>
                 <input
                   name="proofOfPayment"

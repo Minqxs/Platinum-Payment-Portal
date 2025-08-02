@@ -6,7 +6,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button,
   IconButton,
 } from "@mui/material";
 import { graphql } from "relay-runtime";

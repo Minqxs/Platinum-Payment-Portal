@@ -28,6 +28,7 @@ public class PaymentRequestService
         };
 
         // Read Supplier Invoice file
+        if (input.ProofOfPayment != null)
         {
             using var ms = new MemoryStream();
             await input.SupplierInvoice.CopyToAsync(ms);
@@ -66,6 +67,22 @@ public class PaymentRequestService
             paymentRequest.PaymentDescription = input.Description;
             paymentRequest.DepartmentId = input.DepartmentId;
             paymentRequest.ManagerId = input.ManagerId;
+            if (input.SupplierInvoice != null)
+            {
+                using var ms = new MemoryStream();
+                await input.SupplierInvoice.CopyToAsync(ms);
+                paymentRequest.InvoiceFile = ms.ToArray();
+                paymentRequest.InvoiceFileName = input.SupplierInvoice.Name;
+            }
+
+            // Read Proof of Payment file (optional)
+            if (input.ProofOfPayment != null)
+            {
+                using var ms = new MemoryStream();
+                await input.ProofOfPayment.CopyToAsync(ms);
+                paymentRequest.ProofOfPaymentFile = ms.ToArray();
+                paymentRequest.ProofOfPaymentFileName = input.ProofOfPayment.Name;
+            }
             dbContext.Update(paymentRequest);
         }
         else
@@ -128,7 +145,7 @@ public class PaymentRequestService
         string PaymentDetails,
         string Description,
         [property: GraphQLType(typeof(UploadType))]
-        IFile SupplierInvoice,
+        IFile? SupplierInvoice,
         [property: GraphQLType(typeof(UploadType))]
         IFile? ProofOfPayment
     );
@@ -143,7 +160,7 @@ public class PaymentRequestService
         string PaymentDetails,
         string Description,
         [property: GraphQLType(typeof(UploadType))]
-        IFile SupplierInvoice,
+        IFile? SupplierInvoice,
         [property: GraphQLType(typeof(UploadType))]
         IFile? ProofOfPayment
     );
