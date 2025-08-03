@@ -1,33 +1,27 @@
 using System.Text;
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.EntityFrameworkCore;
+using PuppeteerSharp;
 using PlatinumPaymentPortal_Core.DataAccess;
+using PuppeteerSharp.Media;
 
-namespace PlatinumPaymentPortal_Core.Services;
-
-public class PaymentRequestPdfService
+namespace PlatinumPaymentPortal_Core.Services
 {
-    private readonly IConverter _converter;
-
-    public PaymentRequestPdfService(IConverter converter)
+    public class PaymentRequestPdfService
     {
-        _converter = converter;
-    }
 
-    private string RenderPaymentRequestHtml(PaymentRequest request)
-    {
-        var sb = new StringBuilder();
-
-        string? base64Signature = null;
-        if (request.IsSignedOff &&
-            request.Manager?.SignatureImage != null &&
-            !string.IsNullOrWhiteSpace(request.Manager.SignatureImageMimeType))
+        private string RenderPaymentRequestHtml(PaymentRequest request)
         {
-            base64Signature = $"data:{request.Manager.SignatureImageMimeType};base64,{Convert.ToBase64String(request.Manager.SignatureImage)}";
-        }
+            var sb = new StringBuilder();
 
-        sb.Append($@"
+            string? base64Signature = null;
+            if (request.IsSignedOff &&
+                request.Manager?.SignatureImage != null &&
+                !string.IsNullOrWhiteSpace(request.Manager.SignatureImageMimeType))
+            {
+                base64Signature = $"data:{request.Manager.SignatureImageMimeType};base64,{Convert.ToBase64String(request.Manager.SignatureImage)}";
+            }
+
+            sb.Append($@"
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,113 +68,86 @@ public class PaymentRequestPdfService
 
     <div class='section'>
         <table>
-            <tr>
-                <th>Submitted By</th>
-                <td>{request.SubmittedBy?.FirstName}</td>
-            </tr>
-            <tr>
-                <th>Department</th>
-                <td>{request.Department?.NameOfDepartment}</td>
-            </tr>
-            <tr>
-                <th>Manager</th>
-                <td>{request.Manager?.FirstName}</td>
-            </tr>
-            <tr>
-                <th>Invoice Date</th>
-                <td>{request.InvoiceDate:yyyy-MM-dd}</td>
-            </tr>
-            <tr>
-                <th>Requested Payment Date</th>
-                <td>{request.PaymentDateRequested:yyyy-MM-dd}</td>
-            </tr>
-            <tr>
-                <th>Recipient Name</th>
-                <td>{request.PaymentRicpientName}</td>
-            </tr>
-            <tr>
-                <th>Bank Details</th>
-                <td>{request.RicpientBankDetails}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{request.PaymentDescription}</td>
-            </tr>
-            <tr>
-                <th>Signed Off</th>
-                <td>{(request.IsSignedOff ? "Yes" : "No")}</td>
-            </tr>");
+            <tr><th>Submitted By</th><td>{request.SubmittedBy?.FirstName}</td></tr>
+            <tr><th>Department</th><td>{request.Department?.NameOfDepartment}</td></tr>
+            <tr><th>Manager</th><td>{request.Manager?.FirstName}</td></tr>
+            <tr><th>Invoice Date</th><td>{request.InvoiceDate:yyyy-MM-dd}</td></tr>
+            <tr><th>Requested Payment Date</th><td>{request.PaymentDateRequested:yyyy-MM-dd}</td></tr>
+            <tr><th>Recipient Name</th><td>{request.PaymentRicpientName}</td></tr>
+            <tr><th>Bank Details</th><td>{request.RicpientBankDetails}</td></tr>
+            <tr><th>Description</th><td>{request.PaymentDescription}</td></tr>
+            <tr><th>Signed Off</th><td>{(request.IsSignedOff ? "Yes" : "No")}</td></tr>");
 
-        if (request.IsSignedOff && request.SignedOffAt.HasValue)
-        {
-            sb.Append($@"
-            <tr>
-                <th>Signed Off At</th>
-                <td>{request.SignedOffAt.Value:yyyy-MM-dd HH:mm}</td>
-            </tr>");
-        }
+            if (request.IsSignedOff && request.SignedOffAt.HasValue)
+            {
+                sb.Append($@"
+                <tr><th>Signed Off At</th><td>{request.SignedOffAt.Value:yyyy-MM-dd HH:mm}</td></tr>");
+            }
 
-        sb.Append($@"
+            sb.Append(@"
         </table>
     </div>
 
     <div class='signature'>
         <p>Signature:</p>");
 
-        if (!string.IsNullOrEmpty(base64Signature))
-        {
-            sb.Append($@"<img src='{base64Signature}' alt='Manager Signature' />");
-        }
-        else
-        {
-            sb.Append("<p>____________________________</p>");
-        }
+            if (!string.IsNullOrEmpty(base64Signature))
+            {
+                sb.Append($@"<img src='{base64Signature}' alt='Manager Signature' />");
+            }
+            else
+            {
+                sb.Append("<p>____________________________</p>");
+            }
 
-        sb.Append($@"
+            sb.Append($@"
         <p>Manager: {request.Manager?.FirstName}</p>
     </div>
 </body>
 </html>");
 
-        return sb.ToString();
-    }
+            return sb.ToString();
+        }
 
-    private byte[] GeneratePdfBytesFromHtml(string htmlContent)
+        public async Task<string?> GeneratePdfStringFromHtmlAsync(AppDbContext dbContext, int paymentRequestId)
+{
+    var request = await dbContext.PaymentRequests
+        .Include(r => r.SubmittedBy)
+        .Include(r => r.Department)
+        .Include(r => r.Manager)
+        .FirstOrDefaultAsync(r => r.Id == paymentRequestId);
+
+    if (request == null)
+        return null;
+
+    var html = RenderPaymentRequestHtml(request);
+
+    var browserFetcher = new BrowserFetcher();
+    await browserFetcher.DownloadAsync();
+
+    await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
     {
-        var doc = new HtmlToPdfDocument()
+        Headless = true
+    });
+
+    await using var page = await browser.NewPageAsync();
+
+    await page.SetContentAsync(html);
+
+    var pdfBytes = await page.PdfDataAsync(new PdfOptions
+    {
+        Format = PuppeteerSharp.Media.PaperFormat.A4,
+        PrintBackground = true,
+        MarginOptions = new MarginOptions
         {
-            GlobalSettings = new GlobalSettings
-            {
-                Orientation = Orientation.Portrait,
-                PaperSize = PaperKind.A4
-            },
-            Objects =
-            {
-                new ObjectSettings
-                {
-                    HtmlContent = htmlContent,
-                    WebSettings = { DefaultEncoding = "utf-8" }
-                }
-            }
-        };
+            Top = "20px",
+            Bottom = "20px",
+            Left = "20px",
+            Right = "20px"
+        }
+    });
 
-        return _converter.Convert(doc);
-    }
-
-    public async Task<string?> GeneratePdfStringFromHtmlAsync(AppDbContext dbContext, int paymentRequestId)
-    {
-        var request = await dbContext.PaymentRequests
-            .Include(r => r.SubmittedBy)
-            .Include(r => r.Department)
-            .Include(r => r.Manager)
-            .FirstOrDefaultAsync(r => r.Id == paymentRequestId);
-
-        if (request == null)
-            return null;
-
-        var html = RenderPaymentRequestHtml(request);
-        var pdfBytes = GeneratePdfBytesFromHtml(html);
-
-        return Convert.ToBase64String(pdfBytes);
+    return Convert.ToBase64String(pdfBytes);
+}
     }
 }

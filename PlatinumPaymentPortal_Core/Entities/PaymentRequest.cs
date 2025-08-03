@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using PlatinumPaymentPortal_Core.Entities;
 
 public class PaymentRequest
@@ -32,4 +33,7 @@ public class PaymentRequest
     public string? ProofOfPaymentFileName { get; set; }
 
     public bool IsDeleted { get; set; } = false;
+
+    [NotMapped]
+    public int PaymentRequestNumber { get; set; }
 }

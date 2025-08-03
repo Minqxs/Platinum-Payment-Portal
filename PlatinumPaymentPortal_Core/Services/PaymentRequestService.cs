@@ -14,6 +14,7 @@ public class PaymentRequestService
         Guid submittedById
     )
     {
+        var numberOfRequests = dbContext.PaymentRequests.Count();
         var requisition = new PaymentRequest()
         {
             SubmittedById = submittedById,
@@ -23,7 +24,8 @@ public class PaymentRequestService
             RicpientBankDetails = input.PaymentDetails,
             PaymentDescription = input.Description,
             DepartmentId = input.DepartmentId,
-            ManagerId = input.ManagerId
+            ManagerId = input.ManagerId,
+            PaymentRequestNumber = numberOfRequests + 1,
         };
 
         // Read Supplier Invoice file
@@ -82,6 +84,7 @@ public class PaymentRequestService
                 paymentRequest.ProofOfPaymentFile = ms.ToArray();
                 paymentRequest.ProofOfPaymentFileName = input.ProofOfPayment.Name;
             }
+
             dbContext.Update(paymentRequest);
         }
         else

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2c99db23303c7e0e4e7754c0423d33d9>>
+ * @generated SignedSource<<01dc0f3851c8479fba4dab1155899a5c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -200,6 +200,13 @@ return {
             "kind": "ScalarField",
             "name": "ricpientBankDetails",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "paymentRequestNumber",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -207,12 +214,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "423ba15afea90ad4ebfae71dec47ba5e",
+    "cacheID": "d0f53696f149b9ad05cbe95414aa6564",
     "id": null,
     "metadata": {},
     "name": "InvoicesQuery",
     "operationKind": "query",
-    "text": "query InvoicesQuery {\n  ...Invoices_paymentRequests\n}\n\nfragment Invoices_paymentRequests on Query {\n  paymentRequests {\n    id\n    submittedBy {\n      id\n      fullName\n    }\n    coverSheetPdfPath\n    department {\n      value: id\n      label: nameOfDepartment\n      id\n    }\n    invoiceDate\n    invoiceFile\n    invoiceFileName\n    isSignedOff\n    manager {\n      value: id\n      label: fullName\n      id\n    }\n    paymentDateRequested\n    paymentDescription\n    paymentRicpientName\n    proofOfPaymentFile\n    proofOfPaymentFileName\n    ricpientBankDetails\n  }\n}\n"
+    "text": "query InvoicesQuery {\n  ...Invoices_paymentRequests\n}\n\nfragment Invoices_paymentRequests on Query {\n  paymentRequests {\n    id\n    submittedBy {\n      id\n      fullName\n    }\n    coverSheetPdfPath\n    department {\n      value: id\n      label: nameOfDepartment\n      id\n    }\n    invoiceDate\n    invoiceFile\n    invoiceFileName\n    isSignedOff\n    manager {\n      value: id\n      label: fullName\n      id\n    }\n    paymentDateRequested\n    paymentDescription\n    paymentRicpientName\n    proofOfPaymentFile\n    proofOfPaymentFileName\n    ricpientBankDetails\n    paymentRequestNumber\n  }\n}\n"
   }
 };
 })();

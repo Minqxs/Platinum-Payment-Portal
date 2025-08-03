@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d00fb1dfbc4bd1fea1b9b355b1ac9905>>
+ * @generated SignedSource<<2635d38210f755d03d14ae8b252dbffa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,6 +28,7 @@ export type Invoices_paymentRequests$data = {
     };
     readonly paymentDateRequested: string;
     readonly paymentDescription: string;
+    readonly paymentRequestNumber: number;
     readonly paymentRicpientName: string;
     readonly proofOfPaymentFile: ReadonlyArray<any> | null;
     readonly proofOfPaymentFileName: string | null;
@@ -215,6 +216,13 @@ return {
           "kind": "ScalarField",
           "name": "ricpientBankDetails",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "paymentRequestNumber",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -225,6 +233,6 @@ return {
 };
 })();
 
-(node as any).hash = "f29e09313c71d8cf31e12c871abe49e0";
+(node as any).hash = "b4cdbd3a2eae1a3c25aab24f7d601c91";
 
 export default node;

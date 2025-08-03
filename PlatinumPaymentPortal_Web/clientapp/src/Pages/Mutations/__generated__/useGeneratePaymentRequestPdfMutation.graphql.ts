@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4f78950142ad304e8d052331aba1d623>>
+ * @generated SignedSource<<8b2b7a40bc80c65a7cf5d96aff1aec84>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,10 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type GeneratePaymentRequestPdfInput = {
-  paymentRequestId: number;
+  input: PaymentRequestDeleteInput;
+};
+export type PaymentRequestDeleteInput = {
+  paymentRequestId: string;
 };
 export type useGeneratePaymentRequestPdfMutation$variables = {
   input: GeneratePaymentRequestPdfInput;

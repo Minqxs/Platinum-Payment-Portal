@@ -14,7 +14,7 @@ public class Query
     public async Task<IQueryable<PaymentRequest>?> PaymentRequests(
         AppDbContext dbContext,
         [Service] PaymentRequestReadService paymentRequestReadService,
-         ClaimsPrincipal userClaimsPrincipal,
+        ClaimsPrincipal userClaimsPrincipal,
         [Service] UserManager<User> userManager)
     {
         var user = await userManager.GetUserAsync(userClaimsPrincipal);
@@ -22,6 +22,7 @@ public class Query
         {
             return null;
         }
+
         var roles = await userManager.GetRolesAsync(user);
         var role = roles.FirstOrDefault()!.ConvertRole();
 

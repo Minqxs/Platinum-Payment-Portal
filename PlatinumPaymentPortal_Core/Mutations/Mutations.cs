@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Security.Claims;
 using HotChocolate;
 using HotChocolate.Authorization;
+using HotChocolate.Types.Relay;
 using Microsoft.AspNetCore.Identity;
 using PlatinumPaymentPortal_Core.DataAccess;
 using PlatinumPaymentPortal_Core.Entities;
@@ -10,11 +12,11 @@ using PlatinumPaymentPortal_Core.Services;
 public class Mutation
 {
     public async Task<string?> GeneratePaymentRequestPdfAsync(
-        int paymentRequestId,
+        PaymentRequestService.PaymentRequestDeleteInput input,
         [Service] AppDbContext dbContext,
         [Service] PaymentRequestPdfService pdfService)
     {
-        return await pdfService.GeneratePdfStringFromHtmlAsync(dbContext, paymentRequestId);
+        return await pdfService.GeneratePdfStringFromHtmlAsync(dbContext, input.PaymentRequestId);
     }
 
     public async Task<PaymentRequest> CreatePaymentRequestAsync(
@@ -38,6 +40,7 @@ public class Mutation
         return await paymentRequestService.UpdateAsync(dbContext, input);
     }
 
+    [Authorize(Roles = ["Manager", "Admin"])]
     public async Task<PaymentRequest> SignOffPaymentRequestAsync(
         PaymentRequestService.PaymentRequestDeleteInput input,
         AppDbContext dbContext,

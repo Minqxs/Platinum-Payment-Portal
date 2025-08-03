@@ -20,10 +20,10 @@ public class PaymentRequestReadService
     public IQueryable<PaymentRequest> PaymentRequestsBySubmittedBy(
         AppDbContext dbContext,
         Guid submittedById
-       )
+    )
     {
         var paymentRequests = this.PaymentRequests(dbContext).Where(p => p.SubmittedBy.Id == submittedById);
-            ;
+        ;
         return paymentRequests;
     }
 
