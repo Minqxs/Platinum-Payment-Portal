@@ -11,4 +11,6 @@ public class User : IdentityUser<Guid>
 
     [NotMapped]
     public string FullName => this.FirstName + " " + this.LastName;
+    public byte[]? SignatureImage { get; set; } // Signature image stored as byte array
+    public string? SignatureImageMimeType { get; set; } // e.g., "image/png"
 }

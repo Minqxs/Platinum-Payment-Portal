@@ -19,6 +19,14 @@ public class PaymentRequestPdfService
     {
         var sb = new StringBuilder();
 
+        string? base64Signature = null;
+        if (request.IsSignedOff &&
+            request.Manager?.SignatureImage != null &&
+            !string.IsNullOrWhiteSpace(request.Manager.SignatureImageMimeType))
+        {
+            base64Signature = $"data:{request.Manager.SignatureImageMimeType};base64,{Convert.ToBase64String(request.Manager.SignatureImage)}";
+        }
+
         sb.Append($@"
 <!DOCTYPE html>
 <html>
@@ -53,6 +61,11 @@ public class PaymentRequestPdfService
         }}
         .signature {{
             margin-top: 40px;
+        }}
+        .signature img {{
+            max-height: 100px;
+            display: block;
+            margin-top: 10px;
         }}
     </style>
 </head>
@@ -99,19 +112,31 @@ public class PaymentRequestPdfService
             </tr>");
 
         if (request.IsSignedOff && request.SignedOffAt.HasValue)
+        {
             sb.Append($@"
             <tr>
                 <th>Signed Off At</th>
                 <td>{request.SignedOffAt.Value:yyyy-MM-dd HH:mm}</td>
             </tr>");
+        }
 
         sb.Append($@"
         </table>
     </div>
 
     <div class='signature'>
-        <p>Signature:</p>
-        <p>____________________________</p>
+        <p>Signature:</p>");
+
+        if (!string.IsNullOrEmpty(base64Signature))
+        {
+            sb.Append($@"<img src='{base64Signature}' alt='Manager Signature' />");
+        }
+        else
+        {
+            sb.Append("<p>____________________________</p>");
+        }
+
+        sb.Append($@"
         <p>Manager: {request.Manager?.FirstName}</p>
     </div>
 </body>
@@ -142,10 +167,12 @@ public class PaymentRequestPdfService
         return _converter.Convert(doc);
     }
 
-
     public async Task<string?> GeneratePdfStringFromHtmlAsync(AppDbContext dbContext, int paymentRequestId)
     {
         var request = await dbContext.PaymentRequests
+            .Include(r => r.SubmittedBy)
+            .Include(r => r.Department)
+            .Include(r => r.Manager)
             .FirstOrDefaultAsync(r => r.Id == paymentRequestId);
 
         if (request == null)

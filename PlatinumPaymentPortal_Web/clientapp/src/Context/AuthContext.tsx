@@ -30,7 +30,7 @@ export const AuthContextController = React.memo(function AuthContextController({
     React.useEffect(() => {
         async function profile() {
             try {
-                const result = await fetch("/api/auth/profile");
+                const result = await fetch("http://localhost:7290/profile");
                 if (result.ok) {
                     setAuthenticated(true);
                 }
@@ -46,7 +46,7 @@ export const AuthContextController = React.memo(function AuthContextController({
         setAuthenticated(true);
     }, [setAuthenticated]);
     const handleLogout = React.useCallback(() => {
-        fetch("api/auth/logout", {
+        fetch("http://localhost:7290/logout", {
             method: "POST",
         });
         setAuthenticated(false);

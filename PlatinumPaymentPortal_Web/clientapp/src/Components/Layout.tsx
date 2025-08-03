@@ -1,4 +1,4 @@
-import {Grid, GridProps} from "@mui/material";
+import {Grid, GridProps, Paper} from "@mui/material";
 import React from "react";
 import {Outlet} from "react-router-dom";
 
@@ -12,7 +12,15 @@ interface Props {
 
 export function PageLayoutWrapper({children}: Props) {
     return (
-        <Grid container rowGap={2} sx={{background: "black"}}>
+        <Grid
+            container
+            component={Paper}
+            direction={"column"}
+            rowGap={2}
+            sx={{background: "black"}}
+            width={"100%"}
+            height={"100%"}
+        >
             {children}
         </Grid>
     );

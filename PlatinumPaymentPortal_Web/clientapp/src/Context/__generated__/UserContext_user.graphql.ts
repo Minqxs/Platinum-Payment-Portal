@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fc8e330a7cbbe21cc62f9c6b99d84372>>
+ * @generated SignedSource<<eb7642dde5359384fad1c4ed588ccc5a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 export type RoleEnum = "ADMIN" | "EMPLOYEE" | "MANAGER" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type UserContext_user$data = {
+  readonly fullName: string;
   readonly id: string;
   readonly roles: ReadonlyArray<RoleEnum>;
   readonly userName: string | null;
@@ -48,12 +49,19 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "roles",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "fullName",
+      "storageKey": null
     }
   ],
   "type": "User",
   "abstractKey": null
 };
 
-(node as any).hash = "2d8b4fa17f0227148c9bab53dd381b5b";
+(node as any).hash = "f5da441e917555daac765e3a3304541d";
 
 export default node;

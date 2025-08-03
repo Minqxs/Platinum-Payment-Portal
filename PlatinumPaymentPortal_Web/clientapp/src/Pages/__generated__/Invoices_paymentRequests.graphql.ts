@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<85ff6c1353348efde7765de10fa4fc69>>
+ * @generated SignedSource<<d00fb1dfbc4bd1fea1b9b355b1ac9905>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -36,7 +36,7 @@ export type Invoices_paymentRequests$data = {
       readonly fullName: string;
       readonly id: string;
     };
-  }>;
+  }> | null;
   readonly " $fragmentType": "Invoices_paymentRequests";
 };
 export type Invoices_paymentRequests$key = {

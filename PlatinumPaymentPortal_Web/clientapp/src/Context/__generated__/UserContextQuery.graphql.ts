@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d2c6a7f1704e7c05822c677d50d0ff8b>>
+ * @generated SignedSource<<a29eeaa89f78bbf743423fe444f99fc0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ export type RoleEnum = "ADMIN" | "EMPLOYEE" | "MANAGER" | "%future added value";
 export type UserContextQuery$variables = {};
 export type UserContextQuery$data = {
   readonly me: {
+    readonly fullName: string;
     readonly id: string;
     readonly roles: ReadonlyArray<RoleEnum>;
     readonly userName: string | null;
@@ -53,6 +54,13 @@ var v0 = [
         "kind": "ScalarField",
         "name": "roles",
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "fullName",
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -76,12 +84,12 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "5a38576f6b532a1cd83d284030d8d391",
+    "cacheID": "88beb01f53b9bbbe6eecb7a5f7a00ec7",
     "id": null,
     "metadata": {},
     "name": "UserContextQuery",
     "operationKind": "query",
-    "text": "query UserContextQuery {\n  me {\n    id\n    userName\n    roles\n  }\n}\n"
+    "text": "query UserContextQuery {\n  me {\n    id\n    userName\n    roles\n    fullName\n  }\n}\n"
   }
 };
 })();

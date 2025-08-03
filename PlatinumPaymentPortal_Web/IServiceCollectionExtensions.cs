@@ -14,6 +14,7 @@ public static class IServiceCollectionExtensions
         services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         services.AddSingleton<PaymentRequestService>();
         services.AddSingleton<PaymentRequestPdfService>();
+        services.AddSingleton<PaymentRequestReadService>();
         services.AddSingleton<SeedService>();
     }
 }

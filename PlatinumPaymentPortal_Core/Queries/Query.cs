@@ -11,16 +11,31 @@ namespace PlatinumPaymentPortal_Core.Queries;
 
 public class Query
 {
-    public IQueryable<PaymentRequest> PaymentRequests(
-        AppDbContext dbContext)
+    public async Task<IQueryable<PaymentRequest>?> PaymentRequests(
+        AppDbContext dbContext,
+        [Service] PaymentRequestReadService paymentRequestReadService,
+         ClaimsPrincipal userClaimsPrincipal,
+        [Service] UserManager<User> userManager)
     {
-        var paymentRequests = dbContext
-            .PaymentRequests
-            .Include(p => p.Department)
-            .Include(p => p.Manager)
-            .Include(p => p.SubmittedBy)
-            .AsQueryable();
-        return paymentRequests;
+        var user = await userManager.GetUserAsync(userClaimsPrincipal);
+        if (user == null)
+        {
+            return null;
+        }
+        var roles = await userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault()!.ConvertRole();
+
+        switch (role)
+        {
+            case RoleEnum.Admin:
+                return paymentRequestReadService.PaymentRequests(dbContext);
+            case RoleEnum.Employee:
+                return paymentRequestReadService.PaymentRequestsBySubmittedBy(dbContext, user.Id);
+            case RoleEnum.Manager:
+                return paymentRequestReadService.PaymentRequestsByAssignedManager(dbContext, user.Id);
+            default:
+                return null;
+        }
     }
 
     public IQueryable<User> Managers(

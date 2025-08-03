@@ -27,5 +27,4 @@ public static class WebApplicationExtensions
         await seedService.SeedRolesAsync(roleManager);
         await seedService.SeedUsersAsync(userManager, roleManager);
     }
-
 }

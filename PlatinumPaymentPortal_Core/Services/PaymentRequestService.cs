@@ -1,7 +1,6 @@
 using HotChocolate;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PlatinumPaymentPortal_Core.DataAccess;
 
@@ -28,7 +27,7 @@ public class PaymentRequestService
         };
 
         // Read Supplier Invoice file
-        if (input.ProofOfPayment != null)
+        if (input.SupplierInvoice != null)
         {
             using var ms = new MemoryStream();
             await input.SupplierInvoice.CopyToAsync(ms);
