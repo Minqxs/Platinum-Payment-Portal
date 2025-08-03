@@ -23,7 +23,6 @@ public class PaymentRequestReadService
     )
     {
         var paymentRequests = this.PaymentRequests(dbContext).Where(p => p.SubmittedBy.Id == submittedById);
-        ;
         return paymentRequests;
     }
 
