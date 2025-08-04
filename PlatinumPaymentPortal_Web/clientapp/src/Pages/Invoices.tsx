@@ -16,6 +16,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
 import { useGeneratePaymentRequestPdf } from "./Mutations/useGeneratePaymentRequestPdf";
 import { DownloadOutlined } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
 interface Props {
   queryRef: Invoices_paymentRequests$key;
@@ -95,7 +96,7 @@ function InvoiceListPageInner({ queryRef }: Props) {
       link.click();
       link.remove();
     } catch (err) {
-      alert("Failed to generate or download PDF.");
+      toast.error("Failed to generate or download PDF.");
     }
   };
 
@@ -116,7 +117,7 @@ function InvoiceListPageInner({ queryRef }: Props) {
         );
       },
       onError(e) {
-        alert(e.message);
+        toast.error(e.message);
       },
     });
   };

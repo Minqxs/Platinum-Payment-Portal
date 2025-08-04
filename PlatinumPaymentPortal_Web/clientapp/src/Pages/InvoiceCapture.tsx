@@ -28,6 +28,7 @@ import { useGeneratePaymentRequestPdf } from "./Mutations/useGeneratePaymentRequ
 import { useEditPaymentRequest } from "./Mutations/useEditPaymentRequestMutation";
 import { useUserContext } from "../Context/UserContext";
 import { useSignOffPaymentRequest } from "./Mutations/useSignOffPaymentRequestMutation";
+import { toast } from "react-toastify";
 
 const getValidationSchema = (isEditMode: boolean) =>
   Yup.object({
@@ -195,11 +196,11 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
         },
       },
       onCompleted() {
-        alert("Payment request signed off.");
+        toast.done("Payment request signed off.");
         navigate("/invoices");
       },
       onError(e) {
-        alert(e.message);
+        toast.error(e.message);
       },
     });
   };
@@ -226,11 +227,11 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
           },
         },
         onCompleted() {
-          alert("Payment request was created successfully.");
+          toast.done("Payment request was created successfully.");
           navigate("/");
         },
         onError(e) {
-          alert(e.message);
+          toast.error(e.message);
         },
       });
     } else {
@@ -254,11 +255,11 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
           },
         },
         onCompleted() {
-          alert("Payment request was created successfully.");
+          toast.done("Payment request was created successfully.");
           navigate("/");
         },
         onError(e) {
-          alert(e.message);
+          toast.error(e.message);
         },
       });
     }

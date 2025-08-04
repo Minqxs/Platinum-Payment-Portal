@@ -7,6 +7,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React, { useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
 
 const API_BASE = "http://localhost:7290";
 
@@ -74,11 +75,11 @@ export const SignatureManager = () => {
       await res.json();
       setSelectedFile(null);
       setPreview(null);
-      alert("Signature uploaded successfully.");
+      toast.done("Signature uploaded successfully.");
 
       setCacheBuster(Date.now());
     } catch (err) {
-      alert("Failed to upload signature.");
+      toast.error("Failed to upload signature.");
     } finally {
       setLoading(false);
     }
