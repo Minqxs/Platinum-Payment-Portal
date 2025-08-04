@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PlatinumPaymentPortal_Core.DataAccess;
+using PlatinumPaymentPortal_Core.Entities;
 using PlatinumPaymentPortal_Core.Services;
 using Xunit;
 
@@ -24,7 +25,7 @@ public class PaymentRequestServiceTests
         var managerId = Guid.NewGuid();
         var departmentId = 1;
 
-        dbContext.Managers.Add(new Manager { Id = managerId, FirstName = "John" });
+        dbContext.Users.Add(new User { Id = managerId, FirstName = "John" });
         dbContext.Departments.Add(new Department { Id = departmentId, NameOfDepartment = "Finance" });
         await dbContext.SaveChangesAsync();
 
