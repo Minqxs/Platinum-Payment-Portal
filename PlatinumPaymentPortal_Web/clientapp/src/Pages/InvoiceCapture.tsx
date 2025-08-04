@@ -415,7 +415,7 @@ function InvoiceCapturePageInner({ queryKey, paymentQueryKey }: Props) {
                     Save Invoice Details
                   </Button>
                 </Box>
-                {allowedToSignOff && !data?.invoiceFileName && (
+                {allowedToSignOff && !data?.isSignedOff && (
                   <Box display={"flex"} m={1}>
                     <Button
                       loading={isCreating || isEditing}
